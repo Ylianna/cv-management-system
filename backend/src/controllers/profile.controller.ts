@@ -1,7 +1,5 @@
-import type {Request, Response} from 'express';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { Request, Response } from 'express';
+import { prisma } from '../index';
 
 export const autoSaveProfile = async (req: Request, res: Response): Promise<void> => {
     const { profileId, firstName, lastName, location, photoUrl, version } = req.body;
