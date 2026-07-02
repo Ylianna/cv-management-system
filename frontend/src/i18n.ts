@@ -4,16 +4,28 @@ import { initReactI18next } from 'react-i18next';
 const resources = {
     en: {
         translation: {
-            "welcome": "CV Management System",
-            "search_placeholder": "Search across CVs and positions...",
-            "latest_positions": "Latest Positions"
+            "brand_name": "CV Template Engine",
+            "search_placeholder": "Global search across CVs and positions...",
+            "theme_light": "Light Mode",
+            "theme_dark": "Dark Mode",
+            "lang_ru": "Russian",
+            "lang_en": "English",
+            "nav_profile": "My Profile",
+            "nav_positions": "Positions",
+            "nav_logout": "Sign Out"
         }
     },
     ru: {
         translation: {
-            "welcome": "Система управления резюме",
-            "search_placeholder": "Поиск по резюме и позициям...",
-            "latest_positions": "Последние вакансии"
+            "brand_name": "Система управления резюме",
+            "search_placeholder": "Глобальный поиск по CV и позициям...",
+            "theme_light": "Светлая тема",
+            "theme_dark": "Тёмная тема",
+            "lang_ru": "Русский",
+            "lang_en": "English",
+            "nav_profile": "Мой профиль",
+            "nav_positions": "Вакансии",
+            "nav_logout": "Выйти"
         }
     }
 };
@@ -23,6 +35,7 @@ i18n
     .init({
         resources,
         lng: localStorage.getItem('ui-lang') || 'ru',
+        fallbackLng: 'en',
         interpolation: { escapeValue: false }
     });
 
