@@ -8,20 +8,10 @@ dotenv.config();
 const app: Express = express();
 const PORT = process.env.PORT || 5000;
 
-
-export const prisma = new PrismaClient({
-    __internal: {
-        configOverride: () => ({
-            datasource: {
-                url: process.env.DATABASE_URL,
-            },
-        }),
-    },
-} as any);
+export const prisma = new PrismaClient();
 
 app.use(cors());
 app.use(express.json());
-
 
 import { autoSaveProfile } from './controllers/profile.controller';
 app.post('/api/profile/autosave', autoSaveProfile);
