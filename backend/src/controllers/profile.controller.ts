@@ -1,48 +1,42 @@
 import { Request, Response } from 'express';
-import { prisma } from '../index';
+import { Profile } from '../models/Profile';
 
 export const autoSaveProfile = async (req: Request, res: Response): Promise<void> => {
     const { profileId, firstName, lastName, location, photoUrl, version } = req.body;
 
     try {
-        const currentProfile = await prisma.profile.findUnique({
-            where: { id: profileId },
-            select: { version: true }
-        });
+        const profile = await Profile.findByPk(profileId);
 
-        if (!currentProfile) {
+        if (!profile) {
             res.status(404).json({ error: 'Профиль не найден' });
             return;
         }
 
-        if (currentProfile.version !== version) {
+        if (profile.version !== version) {
             res.status(409).json({
                 error: 'Конфликт версий',
-                message: 'Данные были изменены администратором или на другом устройстве. Обновите страницу.'
+                message: 'Данные были изменены. Обновите страницу.'
             });
             return;
         }
 
-        const updatedProfile = await prisma.profile.update({
-            where: {
-                id: profileId,
-                version: version
-            },
-            data: {
-                firstName,
-                lastName,
-                location,
-                photoUrl,
-                version: { increment: 1 }
-            }
-        });
+        profile.firstName = firstName;
+        profile.lastName = lastName;
+        profile.location = location;
+        profile.photoUrl = photoUrl;
+
+        await profile.save();
 
         res.status(200).json({
-            message: 'Успешно сохранено',
-            newVersion: updatedProfile.version
+            message: 'Успешно сохранено через Sequelize',
+            newVersion: profile.version
         });
 
-    } catch (error) {
+    } catch (error: any) {
+        if (error.name === 'SequelizeOptimisticLockError') {
+            res.status(409).json({ error: 'Конфликт версий (Блокировка уровня БД)' });
+            return;
+        }
         res.status(500).json({ error: 'Внутренняя ошибка сервера при сохранении' });
     }
 };
