@@ -5,6 +5,10 @@ import { PrismaClient } from '@prisma/client';
 
 dotenv.config();
 
+if (process.env.DATABASE_URL) {
+    process.env.PRISMA_DATABASE_URL = process.env.DATABASE_URL;
+}
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
