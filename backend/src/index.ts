@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { Sequelize } from 'sequelize';
+import { Profile } from './models/Profile';
+import {autoSaveProfile} from "./controllers/profile.controller";
 
 dotenv.config();
 
@@ -32,4 +34,18 @@ app.get('/', (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`Сервер успешно запущен на порту ${PORT}`);
+});
+
+app.post('/api/profile/autosave', autoSaveProfile);
+
+app.get('/api/profile/:id', async (req, res) => {
+    try {
+        const profile = await Profile.findByPk(req.params.id);
+        if (!profile) {
+            return res.status(404).json({ error: 'Профиль отсутствует' });
+        }
+        return res.json({ profile, version: profile.version });
+    } catch (error) {
+        return res.status(500).json({ error: 'Ошибка БД' });
+    }
 });
