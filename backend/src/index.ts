@@ -18,6 +18,44 @@ app.get('/', (req, res) => {
     res.json({ message: "CV Management API на Sequelize работает стабильно!" });
 });
 
+import { Project } from './models/Project';
+
+app.get('/api/profile/:profileId/projects', async (req, res) => {
+    try {
+        const projects = await Project.findAll({ where: { profileId: req.params.profileId } });
+        res.json(projects);
+    } catch (error) {
+        res.status(500).json({ error: 'Ошибка при получении проектов' });
+    }
+});
+
+app.post('/api/profile/:profileId/projects', async (req, res) => {
+    const { id, name, startDate, endDate, description, tags } = req.body;
+    try {
+        const [project, created] = await Project.upsert({
+            id: id || undefined, // Если ID нет, Sequelize создаст новый UUID
+            profileId: req.params.profileId,
+            name,
+            startDate,
+            endDate,
+            description,
+            tags
+        });
+        res.json({ message: 'Проект сохранен', project });
+    } catch (error) {
+        res.status(500).json({ error: 'Ошибка при сохранении проекта' });
+    }
+});
+
+app.delete('/api/projects/:id', async (req, res) => {
+    try {
+        await Project.destroy({ where: { id: req.params.id } });
+        res.json({ message: 'Проект успешно удален' });
+    } catch (error) {
+        res.status(500).json({ error: 'Ошибка при удалении проекта' });
+    }
+});
+
 sequelize.authenticate()
     .then(() => {
         console.log('Успешное подключение к PostgreSQL!');
