@@ -56,6 +56,68 @@ app.delete('/api/projects/:id', async (req, res) => {
     }
 });
 
+import { AttributeLibrary, ProfileAttributeValue } from './models/Attribute';
+import { Op } from 'sequelize';
+
+app.get('/api/attributes', async (req, res) => {
+    const { prefix, category } = req.query;
+    const whereClause: any = {};
+
+    if (category) {
+        whereClause.category = category;
+    }
+    if (prefix) {
+        whereClause.name = { [Op.iLike]: `${prefix}%` };
+    }
+
+    try {
+        const attributes = await AttributeLibrary.findAll({ where: whereClause });
+        res.json(attributes);
+    } catch (error) {
+        res.status(500).json({ error: 'Ошибка получения библиотеки атрибутов' });
+    }
+});
+
+app.post('/api/attributes', async (req, res) => {
+    const { category, name, description, type, options } = req.body;
+    try {
+        const attribute = await AttributeLibrary.create({ category, name, description, type, options });
+        res.status(201).json(attribute);
+    } catch (error: any) {
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            return res.status(400).json({ error: 'Атрибут с таким именем уже существует' });
+        }
+        res.status(500).json({ error: 'Ошибка создания атрибута' });
+    }
+});
+
+app.get('/api/profile/:profileId/attributes', async (req, res) => {
+    try {
+        const values = await ProfileAttributeValue.findAll({
+            where: { profileId: req.params.profileId },
+            include: [{ model: AttributeLibrary, as: 'attribute' }]
+        });
+        res.json(values);
+    } catch (error) {
+        res.status(500).json({ error: 'Ошибка получения значений профиля' });
+    }
+});
+
+app.post('/api/profile/:profileId/attributes', async (req, res) => {
+    const { attributeId, value } = req.body;
+    try {
+        const [attributeValue, created] = await ProfileAttributeValue.upsert({
+            profileId: req.params.profileId,
+            attributeId,
+            value: String(value)
+        });
+        res.json({ message: 'Значение атрибута сохранено', attributeValue });
+    } catch (error) {
+        res.status(500).json({ error: 'Ошибка сохранения значения атрибута' });
+    }
+});
+
+
 sequelize.authenticate()
     .then(() => {
         console.log('Успешное подключение к PostgreSQL!');
