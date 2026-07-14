@@ -5,6 +5,7 @@ import { SafeTable } from './components/SafeTable';
 import { ProfilePage } from './pages/ProfilePage';
 import { RecruiterPanel } from './pages/RecruiterPanel';
 import { User, FileText, Settings } from 'lucide-react';
+import { PositionsPage } from './pages/PositionsPage';
 
 const mockData = [
     { id: '1', name: 'Smith, John', position: 'Data Scientist', level: 'Middle' },
@@ -57,6 +58,8 @@ function App() {
                 {activeTab === 'profile' && <ProfilePage />}
 
                 {activeTab === 'recruiter' && <RecruiterPanel />}
+
+                {activeTab === 'cv_list' && <PositionsPage />}
             </main>
         </div>
     );
