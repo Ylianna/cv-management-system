@@ -34,7 +34,7 @@ function App() {
             <div className="container mt-3">
                 <div className="alert alert-info py-2 px-3 d-flex align-items-center justify-content-between rounded-3 border-info-subtle shadow-sm mb-3">
             <span className="small fw-bold d-flex align-items-center gap-2 text-info-emphasis">
-              <ShieldAlert size={16} /> Пульт симуляции ролей для защиты проекта:
+              <ShieldAlert size={16} /> Пульт симуляции ролей:
             </span>
                     <div className="btn-group btn-group-sm">
                         <button className={`btn btn-xs ${currentRole === 'CANDIDATE' ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => setCurrentRole('CANDIDATE')}>👨‍💻 Кандидат</button>
