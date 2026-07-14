@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { CheckCircle, AlertCircle, Share2, ArrowLeft } from 'lucide-react';
+import { AlertCircle, ArrowLeft } from 'lucide-react';
+import { DiscussionTab } from '../components/DiscussionTab';
 
 const BACKEND_URL = 'https://cv-backend-43xl.onrender.com';
 
@@ -16,6 +17,7 @@ export const CVGeneratorPage: React.FC<CVGeneratorPageProps> = ({ positionId, on
     const [cv, setCv] = useState<any>(null);
     const [position, setPosition] = useState<any>(null);
     const [profile, setProfile] = useState<any>(null);
+    const [activeView, setActiveView] = useState<'cv' | 'chat'>('cv');
 
     const [cvValues, setCvValues] = useState<{ [key: string]: string }>({});
     const [projects, setProjects] = useState<any[]>([]);
@@ -89,22 +91,29 @@ export const CVGeneratorPage: React.FC<CVGeneratorPageProps> = ({ positionId, on
     return (
         <div className="container py-4" style={{ maxWidth: '850px' }}>
             <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
-                <button className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" onClick={onBack}>
-                    <ArrowLeft size={16} /> Назад к вакансиям
-                </button>
-                <div>
-                    {cv?.isPublished ? (
-                        <span className="badge bg-success p-2 d-flex align-items-center gap-1"><Share2 size={14}/> Опубликовано</span>
-                    ) : (
-                        <button
-                            className="btn btn-sm btn-primary d-flex align-items-center gap-1"
-                            disabled={!isPublishable}
-                            onClick={handlePublish}
-                        >
-                            <CheckCircle size={16} /> Опубликовать резюме
-                        </button>
-                    )}
+                <div className="d-flex gap-2">
+                    <button className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" onClick={onBack}>
+                        <ArrowLeft size={16} /> Назад
+                    </button>
+                    <div className="btn-group btn-group-sm">
+                        <button className={`btn ${activeView === 'cv' ? 'btn-dark' : 'btn-outline-dark'}`} onClick={() => setActiveView('cv')}>Резюме</button>
+                        <button className={`btn ${activeView === 'chat' ? 'btn-dark' : 'btn-outline-dark'}`} onClick={() => setActiveView('chat')}>Обсуждение вакансии</button>
+                    </div>
                 </div>
+                {activeView === 'cv' ? (
+                        <div className="card shadow-lg border-0 p-5 bg-white text-dark rounded-3">
+                    <div>
+                        {cv?.isPublished ? (
+                            <span className="badge bg-success p-2 d-flex align-items-center gap-1">Опубликовано</span>
+                        ) : (
+                            <button className="btn btn-sm btn-primary" disabled={!isPublishable} onClick={handlePublish}>Опубликовать</button>
+                        )}
+                    </div>
+                        </div>
+                )
+                    : (
+                    <DiscussionTab positionId={positionId} />
+                )}
             </div>
 
             <div className="card shadow-lg border-0 p-5 bg-white text-dark rounded-3">
