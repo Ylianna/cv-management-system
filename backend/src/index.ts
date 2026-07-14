@@ -33,7 +33,7 @@ app.post('/api/profile/:profileId/projects', async (req, res) => {
     const { id, name, startDate, endDate, description, tags } = req.body;
     try {
         const [project, created] = await Project.upsert({
-            id: id || undefined, // Если ID нет, Sequelize создаст новый UUID
+            id: id || undefined,
             profileId: req.params.profileId,
             name,
             startDate,
@@ -59,6 +59,67 @@ app.delete('/api/projects/:id', async (req, res) => {
 import { AttributeLibrary, ProfileAttributeValue } from './models/Attribute';
 import { Position, PositionAttribute } from './models/Position';
 import { Op } from 'sequelize';
+import { CV } from './models/CV';
+import { Profile } from './models/Profile';
+
+app.get('/api/positions/:positionId/generate/:profileId', async (req, res) => {
+    const { positionId, profileId } = req.params;
+    try {
+        const position = await Position.findByPk(positionId, {
+            include: [{ model: AttributeLibrary, as: 'requiredAttributes' }]
+        });
+        if (!position) return res.status(404).json({ error: 'Позиция не найдена' });
+
+        const profile = await Profile.findByPk(profileId);
+        if (!profile) return res.status(404).json({ error: 'Профиль кандидата не найден' });
+
+        const filledAttributes = await ProfileAttributeValue.findAll({
+            where: { profileId }
+        });
+
+        const projects = await Project.findAll({
+            where: { profileId },
+            limit: (position as any).maxProjects || 3
+        });
+
+        const [cv, created] = await CV.findOrCreate({
+            where: { profileId, positionId },
+            defaults: { isPublished: false }
+        });
+
+        res.json({
+            cv,
+            position,
+            profile,
+            filledAttributes,
+            projects
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Ошибка автогенерации CV' });
+    }
+});
+
+app.post('/api/cv/:id/publish', async (req, res) => {
+    const { version } = req.body;
+    try {
+        const cv = await CV.findByPk(req.params.id);
+        if (!cv) return res.status(404).json({ error: 'CV не найдено' });
+
+        if (cv.version !== version) {
+            return res.status(409).json({ error: 'Конфликт версий при публикации' });
+        }
+
+        cv.isPublished = true;
+        await cv.save();
+
+        res.json({ message: 'Резюме успешно опубликовано и доступно рекрутерам!', cv });
+    } catch (error: any) {
+        if (error.name === 'SequelizeOptimisticLockError') {
+            return res.status(409).json({ error: 'Конфликт версий на уровне БД' });
+        }
+        res.status(500).json({ error: 'Ошибка публикации' });
+    }
+});
 
 app.get('/api/positions', async (req, res) => {
     try {
