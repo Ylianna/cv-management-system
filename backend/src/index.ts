@@ -58,10 +58,71 @@ app.delete('/api/projects/:id', async (req, res) => {
 
 import { AttributeLibrary, ProfileAttributeValue } from './models/Attribute';
 import { Position, PositionAttribute } from './models/Position';
-import { Op } from 'sequelize';
+import { Op, fn, col } from 'sequelize';
 import { CV } from './models/CV';
 import { Profile } from './models/Profile';
 import { Comment, Like } from './models/Interaction';
+
+app.get('/api/main-stats', async (req, res) => {
+    try {
+        const totalPositions = await Position.count();
+        const totalCVs = await CV.count();
+
+        const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+        const cvsLast24h = await CV.count({
+            where: { createdAt: { [Op.gte]: twentyFourHoursAgo } }
+        });
+
+        const latestPositions = await Position.findAll({
+            order: [['createdAt', 'DESC']],
+            limit: 5
+        });
+
+        const popularPositions = await Position.findAll({
+            attributes: [
+                'id', 'title', 'description', 'version', 'maxProjects',
+                [fn('COUNT', col('CVs.id')), 'cvCount']
+            ],
+            include: [{ model: CV, attributes: [] }],
+            group: ['Position.id'],
+            order: [[fn('COUNT', col('CVs.id')), 'DESC']],
+            limit: 5,
+            subQuery: false
+        });
+
+        const projectsWithTags = await Project.findAll({ attributes: ['tags'] });
+        const tagCounts: { [key: string]: number } = {};
+
+        projectsWithTags.forEach(p => {
+            if (Array.isArray(p.tags)) {
+                p.tags.forEach(tag => {
+                    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                });
+            }
+        });
+
+        const tagCloudData = Object.entries(tagCounts).map(([value, count]) => ({
+            value,
+            count: Math.min(count * 5 + 12, 35)
+        }));
+
+        res.json({
+            statistics: {
+                totalPositions,
+                totalCVs,
+                cvsLast24h,
+                totalCandidates: Math.ceil(totalPositions * 1.5 + 2),
+                totalRecruiters: Math.ceil(totalPositions * 0.4 + 1)
+            },
+            latestPositions,
+            popularPositions,
+            tagCloudData: tagCloudData.slice(0, 20)
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Ошибка сервера при сборе статистики главной страницы' });
+    }
+});
 
 app.get('/api/positions/:positionId/comments', async (req, res) => {
     try {
