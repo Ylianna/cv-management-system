@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { sequelize } from './config/database';
 import { autoSaveProfile } from "./controllers/profile.controller";
+import { requireRole, AuthenticatedRequest } from './middleware/auth';
 
 dotenv.config();
 
@@ -12,7 +13,7 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-app.post('/api/profile/autosave', autoSaveProfile);
+app.post('/api/profile/autosave', requireRole(['CANDIDATE', 'ADMIN']), autoSaveProfile);
 
 app.get('/', (req, res) => {
     res.json({ message: "CV Management API на Sequelize работает стабильно!" });
@@ -152,7 +153,7 @@ app.post('/api/positions/:positionId/comments', async (req, res) => {
     }
 });
 
-app.post('/api/cv/:cvId/like', async (req, res) => {
+app.post('/api/cv/:cvId/like', requireRole(['RECRUITER']), async (req, res) => {
     const { recruiterId } = req.body;
     try {
         const existingLike = await Like.findOne({
@@ -252,7 +253,7 @@ app.get('/api/positions', async (req, res) => {
     }
 });
 
-app.post('/api/positions', async (req, res) => {
+app.post('/api/positions', requireRole(['RECRUITER', 'ADMIN']), async (req, res) => {
     const { id, title, description, accessRules, maxProjects, attributes, version } = req.body;
 
     try {
@@ -349,7 +350,7 @@ app.get('/api/attributes', async (req, res) => {
     }
 });
 
-app.post('/api/attributes', async (req, res) => {
+app.post('/api/attributes', requireRole(['RECRUITER', 'ADMIN']), async (req, res) => {
     const { category, name, description, type, options } = req.body;
     try {
         const attribute = await AttributeLibrary.create({ category, name, description, type, options });
