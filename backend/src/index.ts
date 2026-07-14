@@ -61,6 +61,65 @@ import { Position, PositionAttribute } from './models/Position';
 import { Op } from 'sequelize';
 import { CV } from './models/CV';
 import { Profile } from './models/Profile';
+import { Comment, Like } from './models/Interaction';
+
+app.get('/api/positions/:positionId/comments', async (req, res) => {
+    try {
+        const comments = await Comment.findAll({
+            where: { positionId: req.params.positionId },
+            order: [['createdAt', 'ASC']]
+        });
+        res.json(comments);
+    } catch (error) {
+        res.status(500).json({ error: 'Ошибка загрузки обсуждений' });
+    }
+});
+
+app.post('/api/positions/:positionId/comments', async (req, res) => {
+    const { authorName, content } = req.body;
+    if (!content || !content.trim()) return res.status(400).json({ error: 'Сообщение пустое' });
+
+    try {
+        const comment = await Comment.create({
+            positionId: req.params.positionId,
+            authorName: authorName || 'Кандидат',
+            content: content.trim()
+        });
+        res.status(201).json(comment);
+    } catch (error) {
+        res.status(500).json({ error: 'Ошибка отправки комментария' });
+    }
+});
+
+app.post('/api/cv/:cvId/like', async (req, res) => {
+    const { recruiterId } = req.body;
+    try {
+        const existingLike = await Like.findOne({
+            where: { cvId: req.params.cvId, recruiterId }
+        });
+
+        if (existingLike) {
+            await existingLike.destroy();
+            const count = await Like.count({ where: { cvId: req.params.cvId } });
+            return res.json({ liked: false, totalLikes: count });
+        } else {
+            await Like.create({ cvId: req.params.cvId, recruiterId });
+            const count = await Like.count({ where: { cvId: req.params.cvId } });
+            return res.json({ liked: true, totalLikes: count });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Ошибка обработки лайка' });
+    }
+});
+
+app.get('/api/cv/:cvId/likes', async (req, res) => {
+    try {
+        const count = await Like.count({ where: { cvId: req.params.cvId } });
+        res.json({ totalLikes: count });
+    } catch (error) {
+        res.status(500).json({ error: 0 });
+    }
+});
 
 app.get('/api/positions/:positionId/generate/:profileId', async (req, res) => {
     const { positionId, profileId } = req.params;
