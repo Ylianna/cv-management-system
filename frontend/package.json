@@ -19,13 +19,15 @@
     "react-dropzone": "^15.0.0",
     "react-i18next": "^17.0.8",
     "react-markdown": "^10.1.0",
-    "react-tag-autocomplete": "^7.5.1"
+    "react-tag-autocomplete": "^7.5.1",
+    "react-tagcloud": "^2.3.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^24.13.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
+    "@types/react-tagcloud": "^2.3.2",
     "@vitejs/plugin-react": "^6.0.3",
     "eslint": "^10.6.0",
     "eslint-plugin-react-hooks": "^7.1.1",

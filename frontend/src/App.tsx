@@ -4,8 +4,9 @@ import { Navbar } from './components/Navbar';
 import { SafeTable } from './components/SafeTable';
 import { ProfilePage } from './pages/ProfilePage';
 import { RecruiterPanel } from './pages/RecruiterPanel';
-import { User, FileText, Settings } from 'lucide-react';
+import {User, FileText, Settings, Layers} from 'lucide-react';
 import { PositionsPage } from './pages/PositionsPage';
+import { MainPage } from './pages/MainPage';
 
 const mockData = [
     { id: '1', name: 'Smith, John', position: 'Data Scientist', level: 'Middle' },
@@ -15,14 +16,18 @@ const mockData = [
 
 function App() {
     useTranslation();
-    const [activeTab, setActiveTab] = useState<'cv_list' | 'profile' | 'recruiter'>('cv_list');
-
+    const [activeTab, setActiveTab] = useState<'main' | 'cv_list' | 'profile' | 'recruiter'>('main');
     return (
         <div className="min-vh-100 d-flex flex-column bg-body text-body">
             <Navbar />
 
             <div className="container mt-3">
                 <ul className="nav nav-tabs">
+                    <li className="nav-item">
+                        <button className={`nav-link d-flex align-items-center gap-2 ${activeTab === 'main' ? 'active' : ''}`} onClick={() => setActiveTab('main')}>
+                            <Layers size={16} /> Главная аналитика
+                        </button>
+                    </li>
                     <li className="nav-item">
                         <button className={`nav-link d-flex align-items-center gap-2 ${activeTab === 'cv_list' ? 'active' : ''}`} onClick={() => setActiveTab('cv_list')}>
                             <FileText size={16} /> Список резюме
@@ -60,6 +65,8 @@ function App() {
                 {activeTab === 'recruiter' && <RecruiterPanel />}
 
                 {activeTab === 'cv_list' && <PositionsPage />}
+
+                {activeTab === 'main' && <MainPage />}
             </main>
         </div>
     );
