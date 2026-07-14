@@ -57,7 +57,97 @@ app.delete('/api/projects/:id', async (req, res) => {
 });
 
 import { AttributeLibrary, ProfileAttributeValue } from './models/Attribute';
+import { Position, PositionAttribute } from './models/Position';
 import { Op } from 'sequelize';
+
+app.get('/api/positions', async (req, res) => {
+    try {
+        const positions = await Position.findAll({
+            include: [{ model: AttributeLibrary, as: 'requiredAttributes', through: { attributes: ['isRequired'] } }]
+        });
+        res.json(positions);
+    } catch (error) {
+        res.status(500).json({ error: 'Ошибка получения списка вакансий' });
+    }
+});
+
+app.post('/api/positions', async (req, res) => {
+    const { id, title, description, accessRules, maxProjects, attributes, version } = req.body;
+
+    try {
+        if (id) {
+            const existing = await Position.findByPk(id);
+            if (!existing) return res.status(404).json({ error: 'Вакансия не найдена' });
+
+            if (existing.version !== version) {
+                return res.status(409).json({ error: 'Конфликт версий', message: 'Шаблон вакансии был изменен другим рекрутером.' });
+            }
+
+            existing.title = title;
+            existing.description = description;
+            existing.accessRules = accessRules;
+            existing.maxProjects = maxProjects;
+            await existing.save();
+
+            await PositionAttribute.destroy({ where: { positionId: id } });
+            if (attributes && Array.isArray(attributes)) {
+                await PositionAttribute.bulkCreate(attributes.map((a: any) => ({ positionId: id, attributeId: a.id, isRequired: a.isRequired })));
+            }
+
+            return res.json({ message: 'Вакансия обновлена', position: existing });
+        } else {
+            const newPos = await Position.create({ title, description, accessRules, maxProjects });
+            if (attributes && Array.isArray(attributes)) {
+                await PositionAttribute.bulkCreate(attributes.map((a: any) => ({ positionId: newPos.id, attributeId: a.id, isRequired: a.isRequired })));
+            }
+            return res.status(201).json({ message: 'Вакансия создана', position: newPos });
+        }
+    } catch (error: any) {
+        if (error.name === 'SequelizeOptimisticLockError') {
+            return res.status(409).json({ error: 'Конфликт версий на уровне БД' });
+        }
+        res.status(500).json({ error: 'Серверная ошибка при сохранении вакансии' });
+    }
+});
+
+app.post('/api/positions/:id/duplicate', async (req, res) => {
+    try {
+        const original = await Position.findByPk(req.params.id, {
+            include: [{ model: AttributeLibrary, as: 'requiredAttributes' }]
+        });
+        if (!original) return res.status(404).json({ error: 'Оригинал не найден' });
+
+        const clone = await Position.create({
+            title: `${original.title} (Copy)`,
+            description: original.description,
+            accessRules: original.accessRules,
+            maxProjects: original.maxProjects
+        });
+
+        const originalAttrs = (original as any).requiredAttributes || [];
+        if (originalAttrs.length > 0) {
+            await PositionAttribute.bulkCreate(originalAttrs.map((a: any) => ({
+                positionId: clone.id,
+                attributeId: a.id,
+                isRequired: a.PositionAttribute.isRequired
+            })));
+        }
+
+        res.status(201).json({ message: 'Вакансия успешно дублирована', position: clone });
+    } catch (error) {
+        res.status(500).json({ error: 'Ошибка дублирования вакансии' });
+    }
+});
+
+app.delete('/api/positions/:id', async (req, res) => {
+    try {
+        await Position.destroy({ where: { id: req.params.id } });
+        res.json({ message: 'Вакансия удалена' });
+    } catch (error) {
+        res.status(500).json({ error: 'Ошибка при удалении вакансии' });
+    }
+});
+
 
 app.get('/api/attributes', async (req, res) => {
     const { prefix, category } = req.query;
