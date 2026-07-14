@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeTable } from '../components/SafeTable';
 import { Plus, Sliders, Briefcase } from 'lucide-react';
+import {CVGeneratorPage} from "./CVGeneratorPage.tsx";
 
 const BACKEND_URL = 'https://cv-backend-43xl.onrender.com';
 
@@ -31,6 +32,7 @@ export const PositionsPage: React.FC = () => {
     const [description, setDescription] = useState('');
     const [maxProjects, setMaxProjects] = useState(3);
     const [selectedAttrs, setSelectedAttrs] = useState<{ id: string; isRequired: boolean }[]>([]);
+    const [selectedPositionId, setSelectedPositionId] = useState<string | null>(null);
 
     const [globalAttributes, setGlobalAttributes] = useState<any[]>([]);
 
@@ -131,6 +133,11 @@ export const PositionsPage: React.FC = () => {
     const toggleRequiredStatus = (attrId: string) => {
         setSelectedAttrs(selectedAttrs.map(a => a.id === attrId ? { ...a, isRequired: !a.isRequired } : a));
     };
+
+    if (selectedPositionId) {
+        return <CVGeneratorPage positionId={selectedPositionId} onBack={() => setSelectedPositionId(null)} />;
+    }
+
     return (
         <div className="container py-4">
             <div className="row g-4">
@@ -203,7 +210,7 @@ export const PositionsPage: React.FC = () => {
                             ) : (
                                 <SafeTable
                                     data={tableData}
-                                    onView={(id) => alert(`Просмотр структуры ID: ${id}`)}
+                                    onView={(id) => setSelectedPositionId(id)}
                                     onEdit={(id) => handleDuplicatePosition(id[0])} // Кнопку "Редактировать" временно используем для быстрого дублирования по ТЗ!
                                     onDelete={handleDeletePositions}
                                 />

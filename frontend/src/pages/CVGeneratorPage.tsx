@@ -1,0 +1,182 @@
+import React, { useState, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
+import { CheckCircle, AlertCircle, Share2, ArrowLeft } from 'lucide-react';
+
+const BACKEND_URL = 'https://cv-backend-43xl.onrender.com';
+
+interface CVGeneratorPageProps {
+    positionId: string;
+    onBack: () => void;
+}
+
+export const CVGeneratorPage: React.FC<CVGeneratorPageProps> = ({ positionId, onBack }) => {
+    const profileId = "test-profile-uuid-12345";
+
+    const [loading, setLoading] = useState(true);
+    const [cv, setCv] = useState<any>(null);
+    const [position, setPosition] = useState<any>(null);
+    const [profile, setProfile] = useState<any>(null);
+
+    const [cvValues, setCvValues] = useState<{ [key: string]: string }>({});
+    const [projects, setProjects] = useState<any[]>([]);
+    const loadCVData = async () => {
+        try {
+            const res = await fetch(`${BACKEND_URL}/api/positions/${positionId}/generate/${profileId}`);
+            const data = await res.json();
+
+            setCv(data.cv);
+            setPosition(data.position);
+            setProfile(data.profile);
+            setProjects(data.projects);
+
+            const initialValues: { [key: string]: string } = {};
+            const requiredAttrs = data.position.requiredAttributes || [];
+            const filledAttrs = data.filledAttributes || [];
+
+            requiredAttrs.forEach((reqAttr: any) => {
+                const match = filledAttrs.find((f: any) => f.attributeId === reqAttr.id);
+                initialValues[reqAttr.id] = match ? match.value : '';
+            });
+
+            setCvValues(initialValues);
+            setLoading(false);
+        } catch {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        loadCVData();
+    }, [positionId]);
+
+    const handleInlineEdit = async (attrId: string, value: string) => {
+        setCvValues(prev => ({ ...prev, [attrId]: value }));
+        try {
+            await fetch(`${BACKEND_URL}/api/profile/${profileId}/attributes`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ attributeId: attrId, value })
+            });
+        } catch {
+            alert('Ошибка при инлайн-сохранении значения');
+        }
+    };
+
+    const handlePublish = async () => {
+        try {
+            const res = await fetch(`${BACKEND_URL}/api/cv/${cv.id}/publish`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ version: cv.version })
+            });
+            if (res.status === 200) {
+                alert('Резюме успешно опубликовано!');
+                loadCVData();
+            } else {
+                alert('Конфликт версий. Обновите страницу.');
+            }
+        } catch {
+            alert('Ошибка публикации.');
+        }
+    };
+
+    const isPublishable = position?.requiredAttributes?.every((attr: any) => {
+        if (!attr.PositionAttribute?.isRequired) return true; // Опциональные пропускаем
+        return cvValues[attr.id] && cvValues[attr.id].trim() !== '';
+    });
+    if (loading) return <div className="p-5 text-center text-muted">Сборка резюме из данных профиля...</div>;
+
+    return (
+        <div className="container py-4" style={{ maxWidth: '850px' }}>
+            <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+                <button className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" onClick={onBack}>
+                    <ArrowLeft size={16} /> Назад к вакансиям
+                </button>
+                <div>
+                    {cv?.isPublished ? (
+                        <span className="badge bg-success p-2 d-flex align-items-center gap-1"><Share2 size={14}/> Опубликовано</span>
+                    ) : (
+                        <button
+                            className="btn btn-sm btn-primary d-flex align-items-center gap-1"
+                            disabled={!isPublishable}
+                            onClick={handlePublish}
+                        >
+                            <CheckCircle size={16} /> Опубликовать резюме
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            <div className="card shadow-lg border-0 p-5 bg-white text-dark rounded-3">
+                <div className="border-bottom pb-4 mb-4">
+                    <h2 className="fw-bold text-uppercase m-0">{profile?.firstName} {profile?.lastName}</h2>
+                    <p className="text-muted m-0 mt-1 fw-medium">📍 {profile?.location || 'Местоположение не указано'}</p>
+                    <div className="badge bg-primary-subtle text-primary mt-2">Резюме на позицию: {position?.title}</div>
+                </div>
+
+                <div className="mb-4">
+                    <h5 className="fw-bold text-secondary text-uppercase border-bottom pb-2 mb-3">Профессиональные навыки</h5>
+                    <div className="row g-3">
+                        {position?.requiredAttributes?.map((attr: any) => {
+                            const value = cvValues[attr.id] || '';
+                            const isRequired = attr.PositionAttribute?.isRequired;
+                            const isEmpty = value.trim() === '';
+
+                            return (
+                                <div key={attr.id} className="col-12 p-2 rounded hover-bg-light transition-colors">
+                                    <div className="d-flex justify-content-between align-items-center mb-1">
+                    <span className="fw-semibold small text-dark">
+                      {attr.name} {isRequired && <span className="text-danger">*</span>}
+                    </span>
+                                        {isEmpty && <span className="text-danger small d-flex align-items-center gap-1"><AlertCircle size={12}/> Поле обязательно для заполнения!</span>}
+                                    </div>
+
+                                    {attr.type === 'DROPDOWN' ? (
+                                        <select
+                                            className={`form-select form-select-sm ${isEmpty && isRequired ? 'border-danger bg-danger-subtle' : ''}`}
+                                            value={value}
+                                            onChange={e => handleInlineEdit(attr.id, e.target.value)}
+                                        >
+                                            <option value="">-- Выберите значение --</option>
+                                            {attr.options?.map((opt: string) => <option key={opt} value={opt}>{opt}</option>)}
+                                        </select>
+                                    ) : (
+                                        <input
+                                            type="text"
+                                            className={`form-control form-control-sm ${isEmpty && isRequired ? 'border-danger bg-danger-subtle text-danger' : ''}`}
+                                            placeholder={isEmpty ? "Значение не заполнено (введите текст здесь)..." : ""}
+                                            value={value}
+                                            onChange={e => handleInlineEdit(attr.id, e.target.value)}
+                                        />
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                <div>
+                    <h5 className="fw-bold text-secondary text-uppercase border-bottom pb-2 mb-3">Опыт работы / Релевантные проекты (Макс: {position?.maxProjects})</h5>
+                    {projects.length === 0 ? (
+                        <p className="text-muted small italic">В профиле пока не добавлены проекты.</p>
+                    ) : (
+                        projects.map(p => (
+                            <div key={p.id} className="mb-4">
+                                <div className="d-flex justify-content-between align-items-baseline">
+                                    <h6 className="fw-bold m-0 text-dark">{p.name}</h6>
+                                    <small className="text-muted fw-medium">{new Date(p.startDate).toLocaleDateString()} — {new Date(p.endDate).toLocaleDateString()}</small>
+                                </div>
+                                <div className="small text-secondary mt-1">
+                                    <ReactMarkdown>{p.description}</ReactMarkdown>
+                                </div>
+                                <div className="d-flex gap-1 mt-1">
+                                    {p.tags?.map((t: string) => <span key={t} className="badge bg-light text-muted border small">{t}</span>)}
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
