@@ -96,7 +96,14 @@ const resources = {
             "dropdown_default_option": "-- Select value --",
             "placeholder_inline_empty": "Value is empty (enter text here)...",
             "experience_title": "Work Experience / Relevant Projects (Max: {{max}})",
-            "no_projects_in_profile": "No projects added to the profile yet."
+            "no_projects_in_profile": "No projects added to the profile yet.",
+            "placeholder_pos_title": "e.g. Frontend Developer",
+            "placeholder_pos_desc": "Describe the employee's tasks...",
+            "placeholder_search_prefix": "Search by title prefix...",
+            "placeholder_input_value": "Enter value ({{type}})",
+            "placeholder_enter_tag": "Enter tag",
+            "placeholder_attr_name": "e.g. IELTS Score or English Level",
+            "placeholder_attr_desc": "Describe what data the user should enter..."
         }
     },
     ru: {
@@ -170,7 +177,6 @@ const resources = {
             "section_projects_title": "Раздел «Проекты»",
             "card_add_project_title": "Добавить новый проект",
             "label_project_name": "Название проекта",
-            "placeholder_project_name": "Например: E-commerce Platform",
             "label_start_date": "Дата начала",
             "label_end_date": "Дата окончания",
             "label_tech_tags": "Технологические теги",
@@ -193,7 +199,15 @@ const resources = {
             "dropdown_default_option": "-- Выберите значение --",
             "placeholder_inline_empty": "Значение не заполнено (введите текст здесь)...",
             "experience_title": "Опыт работы / Релевантные проекты (Макс: {{max}})",
-            "no_projects_in_profile": "В профиле пока не добавлены проекты."
+            "no_projects_in_profile": "В профиле пока не добавлены проекты.",
+            "placeholder_pos_title": "Например: Frontend Developer",
+            "placeholder_pos_desc": "Опишите задачи сотрудника...",
+            "placeholder_search_prefix": "Поиск по префиксу названия...",
+            "placeholder_input_value": "Введите значение ({{type}})",
+            "placeholder_project_name": "Например: E-commerce Platform",
+            "placeholder_enter_tag": "Введите тег",
+            "placeholder_attr_name": "Например: IELTS Score или English Level",
+            "placeholder_attr_desc": "Опишите, какие данные должен ввести пользователь..."
         }
     }
 };

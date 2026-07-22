@@ -125,7 +125,7 @@ export const RecruiterPanel: React.FC = () => {
                                     <input
                                         type="text"
                                         className="form-control"
-                                        placeholder="Например: IELTS Score или English Level"
+                                        placeholder={t('placeholder_attr_name')}
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
                                     />
@@ -136,7 +136,7 @@ export const RecruiterPanel: React.FC = () => {
                                     <textarea
                                         className="form-control"
                                         rows={2}
-                                        placeholder="Опишите, какие данные должен ввести пользователь..."
+                                        placeholder={t('placeholder_attr_desc')}
                                         value={description}
                                         onChange={(e) => setDescription(e.target.value)}
                                     />

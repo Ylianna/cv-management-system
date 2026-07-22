@@ -152,12 +152,12 @@ export const PositionsPage: React.FC = () => {
                             <form onSubmit={handleCreatePosition}>
                                 <div className="mb-3">
                                     <label className="form-label fw-semibold">{t('field_pos_title')}</label>
-                                    <input type="text" className="form-control form-control-sm" placeholder="Например: Frontend Developer" value={title} onChange={e => setTitle(e.target.value)} />
+                                    <input type="text" className="form-control form-control-sm" placeholder={t('placeholder_pos_title')} value={title} onChange={e => setTitle(e.target.value)} />
                                 </div>
 
                                 <div className="mb-3">
                                     <label className="form-label fw-semibold">{t('field_pos_desc')}</label>
-                                    <textarea className="form-control form-control-sm" rows={2} placeholder="Опишите задачи сотрудника..." value={description} onChange={e => setDescription(e.target.value)} />
+                                    <textarea className="form-control form-control-sm" rows={2} placeholder={t('placeholder_pos_desc')} value={description} onChange={e => setDescription(e.target.value)} />
                                 </div>
 
                                 <div className="mb-3">

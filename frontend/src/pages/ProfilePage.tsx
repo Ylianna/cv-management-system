@@ -215,7 +215,7 @@ export const ProfilePage: React.FC = () => {
                     <div className="col-md-6">
                         <div className="input-group input-group-sm">
                             <span className="input-group-text"><Search size={14} /></span>
-                            <input type="text" className="form-control" placeholder="Поиск по префиксу названия..." value={searchPrefix} onChange={e => setSearchPrefix(e.target.value)} />
+                            <input type="text" className="form-control" placeholder={t('placeholder_search_prefix')}value={searchPrefix} onChange={e => setSearchPrefix(e.target.value)} />
                         </div>
                     </div>
                     <div className="col-md-6">
@@ -266,7 +266,7 @@ export const ProfilePage: React.FC = () => {
                                             {item.attribute.options?.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                                         </select>
                                     ) : (
-                                        <input type="text" className="form-control form-control-sm" placeholder={`Введите значение (${item.attribute.type})`} value={item.value} onChange={e => setUserValues(prev => prev.map(v => v.attributeId === item.attributeId ? {...v, value: e.target.value} : v))} onBlur={e => handleSaveAttributeValue(item.attributeId, e.target.value)} />
+                                        <input type="text" className="form-control form-control-sm" placeholder={t('placeholder_input_value', { type: item.attribute.type })} value={item.value} onChange={e => setUserValues(prev => prev.map(v => v.attributeId === item.attributeId ? {...v, value: e.target.value} : v))} onBlur={e => handleSaveAttributeValue(item.attributeId, e.target.value)} />
                                     )}
                                 </div>
                             </div>
@@ -282,7 +282,7 @@ export const ProfilePage: React.FC = () => {
                         <div className="row g-3">
                             <div className="col-12">
                                 <label className="form-label fw-semibold">{t('label_project_name')}</label>
-                                <input type="text" className="form-control" value={newProject.name} onChange={e => setNewProject({...newProject, name: e.target.value})} placeholder="Например: E-commerce Platform" />
+                                <input type="text" className="form-control" value={newProject.name} onChange={e => setNewProject({...newProject, name: e.target.value})} placeholder={t('placeholder_project_name')} />
                             </div>
                             <div className="col-md-6">
                                 <label className="form-label fw-semibold">{t('label_start_date')}</label>
@@ -302,7 +302,7 @@ export const ProfilePage: React.FC = () => {
                                     ))}
                                 </div>
                                 <div className="input-group">
-                                    <input type="text" className="form-control form-control-sm" placeholder="Введите тег" value={tagInput} onChange={e => setTagInput(e.target.value)} />
+                                    <input type="text" className="form-control form-control-sm" placeholder={t('placeholder_enter_tag')} value={tagInput} onChange={e => setTagInput(e.target.value)} />
                                     <button className="btn btn-outline-secondary btn-sm" type="button" onClick={() => handleAddTag(tagInput)}>{t('btn_add_tag')}</button>
                                 </div>
                                 {tagInput && allExistingTags.filter(t => t.toLowerCase().startsWith(tagInput.toLowerCase())).length > 0 && (
