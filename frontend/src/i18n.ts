@@ -83,7 +83,20 @@ const resources = {
             "btn_edit_md": "Edit",
             "btn_preview_md": "Preview Markdown",
             "placeholder_empty_desc": "*Description is empty*",
-            "btn_save_project": "Save Project"
+            "btn_save_project": "Save Project",
+            "btn_back": "Back",
+            "tab_cv_view": "Resume",
+            "tab_discussion": "Vacancy Discussion",
+            "status_published": "Published",
+            "btn_publish_cv": "Publish Resume",
+            "location_not_specified": "Location not specified",
+            "cv_for_position": "Resume for position: {{title}}",
+            "skills_title": "Professional Skills",
+            "field_required_warning": "Field is required!",
+            "dropdown_default_option": "-- Select value --",
+            "placeholder_inline_empty": "Value is empty (enter text here)...",
+            "experience_title": "Work Experience / Relevant Projects (Max: {{max}})",
+            "no_projects_in_profile": "No projects added to the profile yet."
         }
     },
     ru: {
@@ -167,7 +180,20 @@ const resources = {
             "btn_edit_md": "Редактировать",
             "btn_preview_md": "Предпросмотр Markdown",
             "placeholder_empty_desc": "*Описание пусто*",
-            "btn_save_project": "Сохранить проект"
+            "btn_save_project": "Сохранить проект",
+            "btn_back": "Назад",
+            "tab_cv_view": "Резюме",
+            "tab_discussion": "Обсуждение вакансии",
+            "status_published": "Опубликовано",
+            "btn_publish_cv": "Опубликовать резюме",
+            "location_not_specified": "Местоположение не указано",
+            "cv_for_position": "Резюме на позицию: {{title}}",
+            "skills_title": "Профессиональные навыки",
+            "field_required_warning": "Поле обязательно для заполнения!",
+            "dropdown_default_option": "-- Выберите значение --",
+            "placeholder_inline_empty": "Значение не заполнено (введите текст здесь)...",
+            "experience_title": "Опыт работы / Релевантные проекты (Макс: {{max}})",
+            "no_projects_in_profile": "В профиле пока не добавлены проекты."
         }
     }
 };

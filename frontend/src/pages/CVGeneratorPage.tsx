@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { AlertCircle, ArrowLeft } from 'lucide-react';
 import { DiscussionTab } from '../components/DiscussionTab';
+import {useTranslation} from "react-i18next";
 
 const BACKEND_URL = 'https://cv-backend-43xl.onrender.com';
 
@@ -12,6 +13,7 @@ interface CVGeneratorPageProps {
 
 export const CVGeneratorPage: React.FC<CVGeneratorPageProps> = ({ positionId, onBack }) => {
     const profileId = "test-profile-uuid-12345";
+    const { t } = useTranslation();
 
     const [loading, setLoading] = useState(true);
     const [cv, setCv] = useState<any>(null);
@@ -93,20 +95,20 @@ export const CVGeneratorPage: React.FC<CVGeneratorPageProps> = ({ positionId, on
             <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
                 <div className="d-flex gap-2">
                     <button className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" onClick={onBack}>
-                        <ArrowLeft size={16} /> Назад
+                        <ArrowLeft size={16} /> {t('btn_back')}
                     </button>
                     <div className="btn-group btn-group-sm">
-                        <button className={`btn ${activeView === 'cv' ? 'btn-dark' : 'btn-outline-dark'}`} onClick={() => setActiveView('cv')}>Резюме</button>
-                        <button className={`btn ${activeView === 'chat' ? 'btn-dark' : 'btn-outline-dark'}`} onClick={() => setActiveView('chat')}>Обсуждение вакансии</button>
+                        <button className={`btn ${activeView === 'cv' ? 'btn-dark' : 'btn-outline-dark'}`} onClick={() => setActiveView('cv')}>{t('tab_cv_view')}</button>
+                        <button className={`btn ${activeView === 'chat' ? 'btn-dark' : 'btn-outline-dark'}`} onClick={() => setActiveView('chat')}>{t('tab_discussion')}</button>
                     </div>
                 </div>
                 {activeView === 'cv' ? (
                         <div className="card shadow-lg border-0 p-5 bg-white text-dark rounded-3">
                     <div>
                         {cv?.isPublished ? (
-                            <span className="badge bg-success p-2 d-flex align-items-center gap-1">Опубликовано</span>
+                            <span className="badge bg-success p-2 d-flex align-items-center gap-1">{t('status_published')}</span>
                         ) : (
-                            <button className="btn btn-sm btn-primary" disabled={!isPublishable} onClick={handlePublish}>Опубликовать</button>
+                            <button className="btn btn-sm btn-primary" disabled={!isPublishable} onClick={handlePublish}>{t('btn_publish_cv')}</button>
                         )}
                     </div>
                         </div>
@@ -119,12 +121,12 @@ export const CVGeneratorPage: React.FC<CVGeneratorPageProps> = ({ positionId, on
             <div className="card shadow-lg border-0 p-5 bg-white text-dark rounded-3">
                 <div className="border-bottom pb-4 mb-4">
                     <h2 className="fw-bold text-uppercase m-0">{profile?.firstName} {profile?.lastName}</h2>
-                    <p className="text-muted m-0 mt-1 fw-medium">📍 {profile?.location || 'Местоположение не указано'}</p>
-                    <div className="badge bg-primary-subtle text-primary mt-2">Резюме на позицию: {position?.title}</div>
+                    <p className="text-muted m-0 mt-1 fw-medium">📍 {profile?.location || t('location_not_specified')}</p>
+                    <div className="badge bg-primary-subtle text-primary mt-2">{t('cv_for_position', { title: position?.title })}</div>
                 </div>
 
                 <div className="mb-4">
-                    <h5 className="fw-bold text-secondary text-uppercase border-bottom pb-2 mb-3">Профессиональные навыки</h5>
+                    <h5 className="fw-bold text-secondary text-uppercase border-bottom pb-2 mb-3">{t('skills_title')}</h5>
                     <div className="row g-3">
                         {position?.requiredAttributes?.map((attr: any) => {
                             const value = cvValues[attr.id] || '';
@@ -137,7 +139,7 @@ export const CVGeneratorPage: React.FC<CVGeneratorPageProps> = ({ positionId, on
                     <span className="fw-semibold small text-dark">
                       {attr.name} {isRequired && <span className="text-danger">*</span>}
                     </span>
-                                        {isEmpty && <span className="text-danger small d-flex align-items-center gap-1"><AlertCircle size={12}/> Поле обязательно для заполнения!</span>}
+                                        {isEmpty && <span className="text-danger small d-flex align-items-center gap-1"><AlertCircle size={12}/> {t('field_required_warning')}</span>}
                                     </div>
 
                                     {attr.type === 'DROPDOWN' ? (
@@ -146,14 +148,14 @@ export const CVGeneratorPage: React.FC<CVGeneratorPageProps> = ({ positionId, on
                                             value={value}
                                             onChange={e => handleInlineEdit(attr.id, e.target.value)}
                                         >
-                                            <option value="">-- Выберите значение --</option>
+                                            <option value="">{t('dropdown_default_option')}</option>
                                             {attr.options?.map((opt: string) => <option key={opt} value={opt}>{opt}</option>)}
                                         </select>
                                     ) : (
                                         <input
                                             type="text"
                                             className={`form-control form-control-sm ${isEmpty && isRequired ? 'border-danger bg-danger-subtle text-danger' : ''}`}
-                                            placeholder={isEmpty ? "Значение не заполнено (введите текст здесь)..." : ""}
+                                            placeholder={isEmpty ? t('placeholder_inline_empty') : ""}
                                             value={value}
                                             onChange={e => handleInlineEdit(attr.id, e.target.value)}
                                         />
@@ -165,9 +167,9 @@ export const CVGeneratorPage: React.FC<CVGeneratorPageProps> = ({ positionId, on
                 </div>
 
                 <div>
-                    <h5 className="fw-bold text-secondary text-uppercase border-bottom pb-2 mb-3">Опыт работы / Релевантные проекты (Макс: {position?.maxProjects})</h5>
+                    <h5 className="fw-bold text-secondary text-uppercase border-bottom pb-2 mb-3">{t('experience_title', { max: position?.maxProjects || 3 })}</h5>
                     {projects.length === 0 ? (
-                        <p className="text-muted small italic">В профиле пока не добавлены проекты.</p>
+                        <p className="text-muted small italic">{t('no_projects_in_profile')}</p>
                     ) : (
                         projects.map(p => (
                             <div key={p.id} className="mb-4">
