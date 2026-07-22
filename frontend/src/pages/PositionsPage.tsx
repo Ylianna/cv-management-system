@@ -23,7 +23,7 @@ interface PositionItem {
 }
 
 export const PositionsPage: React.FC = () => {
-    useTranslation();
+    const { t } = useTranslation();
 
     const [positions, setPositions] = useState<PositionItem[]>([]);
     const [loading, setLoading] = useState(true);
@@ -146,27 +146,27 @@ export const PositionsPage: React.FC = () => {
                     <div className="card shadow-sm border-success-subtle">
                         <div className="card-header bg-success text-white fw-bold d-flex align-items-center gap-2">
                             <Sliders size={18} />
-                            <span>Конструктор вакансии</span>
+                            <span>{t('constructor_title')}</span>
                         </div>
                         <div className="card-body p-4">
                             <form onSubmit={handleCreatePosition}>
                                 <div className="mb-3">
-                                    <label className="form-label fw-semibold">Название позиции (Шаблона)</label>
+                                    <label className="form-label fw-semibold">{t('field_pos_title')}</label>
                                     <input type="text" className="form-control form-control-sm" placeholder="Например: Frontend Developer" value={title} onChange={e => setTitle(e.target.value)} />
                                 </div>
 
                                 <div className="mb-3">
-                                    <label className="form-label fw-semibold">Краткое описание требований</label>
+                                    <label className="form-label fw-semibold">{t('field_pos_desc')}</label>
                                     <textarea className="form-control form-control-sm" rows={2} placeholder="Опишите задачи сотрудника..." value={description} onChange={e => setDescription(e.target.value)} />
                                 </div>
 
                                 <div className="mb-3">
-                                    <label className="form-label fw-semibold">Макс. число проектов в CV по ТЗ</label>
+                                    <label className="form-label fw-semibold">{t('field_max_projects')}</label>
                                     <input type="number" className="form-control form-control-sm" min={1} max={10} value={maxProjects} onChange={e => setMaxProjects(Number(e.target.value))} />
                                 </div>
 
                                 <div className="mb-3">
-                                    <label className="form-label fw-semibold d-block mb-2">Привязать поля из Библиотеки</label>
+                                    <label className="form-label fw-semibold d-block mb-2">{t('field_bind_attrs')}</label>
                                     <div className="border rounded p-2 bg-light flex-column gap-1 d-flex" style={{ maxHeight: '180px', overflowY: 'auto' }}>
                                         {globalAttributes.map(attr => {
                                             const selection = selectedAttrs.find(a => a.id === attr.id);
@@ -189,7 +189,7 @@ export const PositionsPage: React.FC = () => {
                                 </div>
 
                                 <button type="submit" className="btn btn-success w-100 d-flex align-items-center justify-content-center gap-1 mt-4">
-                                    <Plus size={16} /> Создать шаблон вакансии
+                                    <Plus size={16} /> {t('btn_create_template')}
                                 </button>
                             </form>
                         </div>
@@ -200,13 +200,13 @@ export const PositionsPage: React.FC = () => {
                     <div className="card shadow-sm">
                         <div className="card-header bg-dark text-white fw-bold d-flex align-items-center gap-2">
                             <Briefcase size={18} />
-                            <span>Доступные позиции рекрутеров</span>
+                            <span>{t('available_positions')}</span>
                         </div>
                         <div className="card-body p-3">
                             {loading ? (
-                                <div className="p-5 text-center text-muted">Загрузка вакансий...</div>
+                                <div className="p-5 text-center text-muted">{t('loading_positions')}</div>
                             ) : positions.length === 0 ? (
-                                <div className="p-5 text-center text-muted">Позиции ещё не созданы.</div>
+                                <div className="p-5 text-center text-muted">{t('empty_positions')}</div>
                             ) : (
                                 <SafeTable
                                     data={tableData}
@@ -215,7 +215,7 @@ export const PositionsPage: React.FC = () => {
                                     onDelete={handleDeletePositions}
                                 />
                             )}
-                            <small className="text-muted mt-2 d-block text-center">*Выделите галочкой ОДНУ строку, чтобы сверху плавно всплыла панель управления [Дублировать/Удалить].</small>
+                            <small className="text-muted mt-2 d-block text-center">{t('table_info_tip')}</small>
                         </div>
                     </div>
                 </div>

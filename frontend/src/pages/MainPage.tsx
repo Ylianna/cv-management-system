@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TagCloud } from 'react-tagcloud';
 import { Briefcase, BarChart2, Star, TrendingUp } from 'lucide-react';
+import {useTranslation} from "react-i18next";
 
 const BACKEND_URL = 'https://cv-backend-43xl.onrender.com';
 
@@ -13,6 +14,7 @@ interface Stats {
 }
 
 export const MainPage: React.FC = () => {
+    const { t } = useTranslation();
     const [stats, setStats] = useState<Stats | null>(null);
     const [latest, setLatest] = useState<any[]>([]);
     const [popular, setPopular] = useState<any[]>([]);
@@ -41,19 +43,19 @@ export const MainPage: React.FC = () => {
                 <div className="col-md-4">
                     <div className="card shadow-sm border-0 bg-primary text-white p-3 rounded-3 text-center">
                         <h2 className="fw-extrabold m-0">{stats?.cvsLast24h}</h2>
-                        <small className="opacity-90">Новых CV создано за последние 24 часа</small>
+                        <small className="opacity-90">{t('stats_last24h')}</small>
                     </div>
                 </div>
                 <div className="col-md-4">
                     <div className="card shadow-sm border-0 bg-dark text-white p-3 rounded-3 text-center">
                         <h2 className="fw-extrabold m-0">{stats?.totalPositions}</h2>
-                        <small className="opacity-90">Активных шаблонов и позиций</small>
+                        <small className="opacity-90">{t('stats_active_pos')}</small>
                     </div>
                 </div>
                 <div className="col-md-4">
                     <div className="card shadow-sm border-0 bg-success text-white p-3 rounded-3 text-center">
                         <h2 className="fw-extrabold m-0">{stats?.totalCVs}</h2>
-                        <small className="opacity-90">Всего резюме подано кандидатами</small>
+                        <small className="opacity-90">{t('stats_total_cvs')}</small>
                     </div>
                 </div>
             </div>
@@ -62,13 +64,13 @@ export const MainPage: React.FC = () => {
                 <div className="col-lg-8">
                     <div className="card shadow-sm mb-4">
                         <div className="card-header bg-light fw-bold text-dark d-flex align-items-center gap-2 py-3">
-                            <Briefcase size={18} className="text-warning" /> <span>Последние созданные вакансии</span>
+                            <Briefcase size={18} className="text-warning" /> <span>{t('latest_vacancies')}</span>
                         </div>
                         <div className="card-body p-0">
                             <div className="table-responsive">
                                 <table className="table table-hover align-middle mb-0 small">
                                     <thead className="table-light">
-                                    <tr><th>Название</th><th>Описание</th></tr>
+                                    <tr><th>{t('table_col_title')}</th><th>{t('table_col_desc')}</th></tr>
                                     </thead>
                                     <tbody>
                                     {latest.map(p => (
@@ -85,13 +87,13 @@ export const MainPage: React.FC = () => {
 
                     <div className="card shadow-sm">
                         <div className="card-header bg-light fw-bold text-dark d-flex align-items-center gap-2 py-3">
-                            <Star size={18} className="text-danger" /> <span>Топ-5 позиций по количеству поданных CV</span>
+                            <Star size={18} className="text-danger" /> <span>{t('top_vacancies')}</span>
                         </div>
                         <div className="card-body p-0">
                             <div className="table-responsive">
                                 <table className="table table-hover align-middle mb-0 small">
                                     <thead className="table-light">
-                                    <tr><th>Рейтинг</th><th>Название позиции</th><th className="text-center">Подано резюме</th></tr>
+                                    <tr><th>{t('table_col_rank')}</th><th>{t('table_col_title')}</th><th className="text-center">{t('table_col_cv_count')}</th></tr>
                                     </thead>
                                     <tbody>
                                     {popular.map((p, index) => (
@@ -111,11 +113,11 @@ export const MainPage: React.FC = () => {
                 <div className="col-lg-4">
                     <div className="card shadow-sm h-100">
                         <div className="card-header bg-light fw-bold text-dark d-flex align-items-center gap-2 py-3">
-                            <TrendingUp size={18} className="text-success" /> <span>Облако востребованных тегов</span>
+                            <TrendingUp size={18} className="text-success" /> <span>{t('tag_cloud_title')}</span>
                         </div>
                         <div className="card-body d-flex align-items-center justify-content-center p-4 bg-white rounded-bottom">
                             {tags.length === 0 ? (
-                                <small className="text-muted italic">Добавьте теги технологий в проекты профиля, чтобы появилось облако.</small>
+                                <small className="text-muted italic">{t('tag_cloud_empty')}</small>
                             ) : (
                                 <div className="text-center">
                                     <TagCloud

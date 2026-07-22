@@ -42,7 +42,7 @@ interface UserAttributeValue {
 }
 
 export const ProfilePage: React.FC = () => {
-    useTranslation();
+    const { t } = useTranslation();
     const profileId = "test-profile-uuid-12345";
 
     const [profile, setProfile] = useState<ProfileData>({
@@ -179,11 +179,14 @@ export const ProfilePage: React.FC = () => {
     return (
         <div className="container py-4" style={{ maxWidth: '850px' }}>
             <div className="d-flex justify-content-between align-items-center mb-4 p-3 rounded border shadow-sm bg-light-subtle">
-                <h4 className="fw-bold m-0 d-flex align-items-center gap-2"><Save size={20} className="text-primary"/>Раздел «Me»</h4>
+                <h4 className="fw-bold m-0 d-flex align-items-center gap-2">
+                    <Save size={20} className="text-primary"/>
+                    {t('profile_title')}
+                </h4>
                 <div>
-                    {syncStatus === 'saving' && <span className="badge bg-warning text-dark p-2"><RefreshCw size={14} className="spinner-border spinner-border-sm border-0" /> Сохранение...</span>}
-                    {syncStatus === 'saved' && <span className="badge bg-success p-2"><CheckCircle size={14} /> Изменения сохранены</span>}
-                    {syncStatus === 'conflict' && <span className="badge bg-danger p-2"><AlertTriangle size={14} /> Ошибка блокировки</span>}
+                    {syncStatus === 'saving' && <span className="badge bg-warning text-dark p-2"><RefreshCw size={14} className="spinner-border spinner-border-sm border-0" /> {t('status_saving')}</span>}
+                    {syncStatus === 'saved' && <span className="badge bg-success p-2"><CheckCircle size={14} /> {t('status_saved')}</span>}
+                    {syncStatus === 'conflict' && <span className="badge bg-danger p-2"><AlertTriangle size={14} /> {t('status_conflict')}</span>}
                 </div>
             </div>
 
@@ -191,16 +194,16 @@ export const ProfilePage: React.FC = () => {
                 <div className="card-body p-4">
                     <div className="row g-3">
                         <div className="col-md-6">
-                            <label className="form-label fw-semibold">Имя</label>
-                            <input type="text" className="form-control" value={profile.firstName} onChange={(e) => setProfile({...profile, firstName: e.target.value})} disabled={syncStatus === 'conflict'} />
+                            <label className="form-label fw-semibold">{t('field_firstname')}</label>
+                            <input type="text" className="form-control" placeholder={t('placeholder_firstname')} value={profile.firstName} onChange={(e) => setProfile({...profile, firstName: e.target.value})} disabled={syncStatus === 'conflict'} />
                         </div>
                         <div className="col-md-6">
-                            <label className="form-label fw-semibold">Фамилия</label>
-                            <input type="text" className="form-control" value={profile.lastName} onChange={(e) => setProfile({...profile, lastName: e.target.value})} disabled={syncStatus === 'conflict'} />
+                            <label className="form-label fw-semibold">{t('field_lastname')}</label>
+                            <input type="text" className="form-control" placeholder={t('placeholder_lastname')} value={profile.lastName} onChange={(e) => setProfile({...profile, lastName: e.target.value})} disabled={syncStatus === 'conflict'} />
                         </div>
                         <div className="col-12">
-                            <label className="form-label fw-semibold">Местоположение</label>
-                            <input type="text" className="form-control" value={profile.location} onChange={(e) => setProfile({...profile, location: e.target.value})} disabled={syncStatus === 'conflict'} />
+                            <label className="form-label fw-semibold">{t('field_location')}</label>
+                            <input type="text" className="form-control" placeholder={t('placeholder_location')} value={profile.location} onChange={(e) => setProfile({...profile, location: e.target.value})} disabled={syncStatus === 'conflict'} />
                         </div>
                     </div>
                 </div>

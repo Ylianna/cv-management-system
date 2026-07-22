@@ -24,7 +24,7 @@ interface AttributeItem {
 }
 
 export const RecruiterPanel: React.FC = () => {
-    useTranslation();
+    const { t } = useTranslation();
 
     const [attributes, setAttributes] = useState<AttributeItem[]>([]);
     const [loading, setLoading] = useState(true);
@@ -107,12 +107,12 @@ export const RecruiterPanel: React.FC = () => {
                     <div className="card shadow-sm border-primary-subtle">
                         <div className="card-header bg-primary text-white fw-bold d-flex align-items-center gap-2">
                             <Sliders size={18} />
-                            <span>Создать новый атрибут</span>
+                            <span>{t('attr_constructor_title')}</span>
                         </div>
                         <div className="card-body p-4">
                             <form onSubmit={handleCreateAttribute}>
                                 <div className="mb-3">
-                                    <label className="form-label fw-semibold">Категория поля</label>
+                                    <label className="form-label fw-semibold">{t('field_attr_category')}</label>
                                     <select className="form-select" value={category} onChange={(e) => setCategory(e.target.value)}>
                                         {CATEGORIES.map((cat) => (
                                             <option key={cat} value={cat}>{cat}</option>
@@ -121,7 +121,7 @@ export const RecruiterPanel: React.FC = () => {
                                 </div>
 
                                 <div className="mb-3">
-                                    <label className="form-label fw-semibold">Глобальное имя атрибута (Уникальное)</label>
+                                    <label className="form-label fw-semibold">{t('field_attr_name')}</label>
                                     <input
                                         type="text"
                                         className="form-control"
@@ -132,7 +132,7 @@ export const RecruiterPanel: React.FC = () => {
                                 </div>
 
                                 <div className="mb-3">
-                                    <label className="form-label fw-semibold">Описание / Подсказка для кандидата</label>
+                                    <label className="form-label fw-semibold">{t('field_attr_desc')}</label>
                                     <textarea
                                         className="form-control"
                                         rows={2}
@@ -143,7 +143,7 @@ export const RecruiterPanel: React.FC = () => {
                                 </div>
 
                                 <div className="mb-3">
-                                    <label className="form-label fw-semibold">Тип данных</label>
+                                    <label className="form-label fw-semibold">{t('field_attr_type')}</label>
                                     <select className="form-select" value={type} onChange={(e) => setType(e.target.value)}>
                                         {ATTRIBUTE_TYPES.map((t) => (
                                             <option key={t.value} value={t.value}>{t.label}</option>
@@ -153,7 +153,7 @@ export const RecruiterPanel: React.FC = () => {
 
                                 {type === 'DROPDOWN' && (
                                     <div className="mb-3 p-3 bg-light rounded border border-warning-subtle">
-                                        <label className="form-label fw-semibold text-warning-emphasis">Варианты выбора (через запятую)</label>
+                                        <label className="form-label fw-semibold text-warning-emphasis">{t('field_dropdown_opts')}</label>
                                         <input
                                             type="text"
                                             className="form-control"
@@ -161,12 +161,12 @@ export const RecruiterPanel: React.FC = () => {
                                             value={optionsInput}
                                             onChange={(e) => setOptionsInput(e.target.value)}
                                         />
-                                        <small className="text-muted mt-1 d-block">Каждое значение разделите обычной запятой.</small>
+                                        <small className="text-muted mt-1 d-block">{t('comma_separator_tip')}</small>
                                     </div>
                                 )}
 
                                 <button type="submit" className="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-1 mt-4">
-                                    <Plus size={16} /> Добавить в библиотеку
+                                    <Plus size={16} /> {t('btn_add_to_library')}
                                 </button>
                             </form>
                         </div>
@@ -177,21 +177,21 @@ export const RecruiterPanel: React.FC = () => {
                     <div className="card shadow-sm">
                         <div className="card-header bg-dark text-white fw-bold d-flex align-items-center gap-2">
                             <Layers size={18} />
-                            <span>Глобальная библиотека атрибутов</span>
+                            <span>{t('global_library_title')}</span>
                         </div>
                         <div className="card-body p-0">
                             {loading ? (
-                                <div className="p-5 text-center text-muted">Загрузка библиотеки полей...</div>
+                                <div className="p-5 text-center text-muted">{t('loading_attributes')}</div>
                             ) : attributes.length === 0 ? (
-                                <div className="p-5 text-center text-muted">Библиотека пуста. Создайте первое поле слева!</div>
+                                <div className="p-5 text-center text-muted">{t('empty_attributes')}</div>
                             ) : (
                                 <div className="table-responsive">
                                     <table className="table table-hover align-middle mb-0">
                                         <thead className="table-light">
                                         <tr>
-                                            <th>Имя атрибута</th>
-                                            <th>Категория / Тип</th>
-                                            <th>Описание</th>
+                                            <th>{t('th_attr_name')}</th>
+                                            <th>{t('th_attr_cat')}</th>
+                                            <th>{t('th_attr_desc')}</th>
                                         </tr>
                                         </thead>
                                         <tbody>

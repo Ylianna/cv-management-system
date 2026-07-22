@@ -8,7 +8,7 @@ import { MainPage } from './pages/MainPage';
 import { User, Settings, Layers, Briefcase, ShieldAlert } from 'lucide-react';
 
 function App() {
-    useTranslation();
+    const { t } = useTranslation();
 
     const [currentRole, setCurrentRole] = useState<'CANDIDATE' | 'RECRUITER' | 'ADMIN'>('CANDIDATE');
     const [activeTab, setActiveTab] = useState<'main' | 'cv_list' | 'profile' | 'recruiter'>('main');
@@ -48,20 +48,20 @@ function App() {
                 <ul className="nav nav-tabs">
                     <li className="nav-item">
                         <button className={`nav-link d-flex align-items-center gap-2 ${activeTab === 'main' ? 'active' : ''}`} onClick={() => setActiveTab('main')}>
-                            <Layers size={16} /> Главная
+                            <Layers size={16} /> {t('tab_main')}
                         </button>
                     </li>
 
                     <li className="nav-item">
                         <button className={`nav-link d-flex align-items-center gap-2 ${activeTab === 'cv_list' ? 'active' : ''}`} onClick={() => setActiveTab('cv_list')}>
-                            <Briefcase size={16} /> Вакансии (Шаблоны)
+                            <Briefcase size={16} /> {t('tab_cv_list')}
                         </button>
                     </li>
 
                     {(currentRole === 'CANDIDATE' || currentRole === 'ADMIN') && (
                         <li className="nav-item">
                             <button className={`nav-link d-flex align-items-center gap-2 ${activeTab === 'profile' ? 'active' : ''}`} onClick={() => setActiveTab('profile')}>
-                                <User size={16} /> Мой профиль (CV)
+                                <User size={16} /> {t('tab_profile')}
                             </button>
                         </li>
                     )}
@@ -69,7 +69,7 @@ function App() {
                     {(currentRole === 'RECRUITER' || currentRole === 'ADMIN') && (
                         <li className="nav-item">
                             <button className={`nav-link d-flex align-items-center gap-2 ${activeTab === 'recruiter' ? 'active' : ''}`} onClick={() => setActiveTab('recruiter')}>
-                                <Settings size={16} /> Библиотека атрибутов
+                                <Settings size={16} /> {t('tab_recruiter')}
                             </button>
                         </li>
                     )}
