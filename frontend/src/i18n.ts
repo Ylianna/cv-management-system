@@ -64,7 +64,26 @@ const resources = {
             "empty_attributes": "The library is empty. Create the first field on the left!",
             "th_attr_name": "Attribute Name",
             "th_attr_cat": "Category / Type",
-            "th_attr_desc": "Description"
+            "th_attr_desc": "Description",
+            "filter_all_categories": "All Categories",
+            "recent_fields": "Recent:",
+            "boolean_yes": "Yes / Matches",
+            "select_value_placeholder": "Select value...",
+            "input_value_placeholder": "Enter value ({{type}})",
+            "section_projects_title": "Section «Projects»",
+            "card_add_project_title": "Add New Project",
+            "label_project_name": "Project Name",
+            "placeholder_project_name": "e.g. E-commerce Platform",
+            "label_start_date": "Start Date",
+            "label_end_date": "End Date",
+            "label_tech_tags": "Technology Tags",
+            "placeholder_tech_tags": "Enter tag",
+            "btn_add_tag": "Add",
+            "label_project_desc": "Project Description",
+            "btn_edit_md": "Edit",
+            "btn_preview_md": "Preview Markdown",
+            "placeholder_empty_desc": "*Description is empty*",
+            "btn_save_project": "Save Project"
         }
     },
     ru: {
@@ -129,7 +148,26 @@ const resources = {
             "empty_attributes": "Библиотека пуста. Создайте первое поле слева!",
             "th_attr_name": "Имя атрибута",
             "th_attr_cat": "Категория / Тип",
-            "th_attr_desc": "Описание"
+            "th_attr_desc": "Описание",
+            "filter_all_categories": "Все категории",
+            "recent_fields": "Недавние:",
+            "boolean_yes": "Да / Соответствует",
+            "select_value_placeholder": "Выберите значение...",
+            "input_value_placeholder": "Введите значение ({{type}})",
+            "section_projects_title": "Раздел «Проекты»",
+            "card_add_project_title": "Добавить новый проект",
+            "label_project_name": "Название проекта",
+            "placeholder_project_name": "Например: E-commerce Platform",
+            "label_start_date": "Дата начала",
+            "label_end_date": "Дата окончания",
+            "label_tech_tags": "Технологические теги",
+            "placeholder_tech_tags": "Введите тег",
+            "btn_add_tag": "Добавить",
+            "label_project_desc": "Описание проекта",
+            "btn_edit_md": "Редактировать",
+            "btn_preview_md": "Предпросмотр Markdown",
+            "placeholder_empty_desc": "*Описание пусто*",
+            "btn_save_project": "Сохранить проект"
         }
     }
 };

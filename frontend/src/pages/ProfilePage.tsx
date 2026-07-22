@@ -222,7 +222,7 @@ export const ProfilePage: React.FC = () => {
                         <div className="input-group input-group-sm">
                             <span className="input-group-text"><Filter size={14} /></span>
                             <select className="form-select" value={selectedCategory} onChange={e => setSelectedCategory(e.target.value)}>
-                                <option value="">Все категории</option>
+                                <option value="">{t('filter_all_categories')}</option>
                                 {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                             </select>
                         </div>
@@ -231,7 +231,7 @@ export const ProfilePage: React.FC = () => {
 
                 {recentlyUsed.length > 0 && (
                     <div className="mb-3 p-2 bg-light-subtle border rounded small">
-                        <span className="text-muted fw-bold d-inline-flex align-items-center gap-1 me-2"><Clock size={12} /> Недавние:</span>
+                        <span className="text-muted fw-bold d-inline-flex align-items-center gap-1 me-2"><Clock size={12} /> {t('recent_fields')}</span>
                         {recentlyUsed.map(r => (
                             <button key={r.id} type="button" className="btn btn-xs btn-outline-secondary me-1 py-0 px-2" onClick={() => handleAddAttributeToProfile(r)}>+ {r.name}</button>
                         ))}
@@ -258,11 +258,11 @@ export const ProfilePage: React.FC = () => {
                                     {item.attribute.type === 'BOOLEAN' ? (
                                         <div className="form-check">
                                             <input type="checkbox" className="form-check-input" checked={item.value === 'true'} onChange={e => handleSaveAttributeValue(item.attributeId, String(e.target.checked))} />
-                                            <label className="form-check-label">Да / Соответствует</label>
+                                            <label className="form-check-label">{t('boolean_yes')}</label>
                                         </div>
                                     ) : item.attribute.type === 'DROPDOWN' ? (
                                         <select className="form-select form-select-sm" value={item.value} onChange={e => handleSaveAttributeValue(item.attributeId, e.target.value)}>
-                                            <option value="">Выберите значение...</option>
+                                            <option value="">{t('select_value_placeholder')}</option>
                                             {item.attribute.options?.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                                         </select>
                                     ) : (
@@ -275,25 +275,25 @@ export const ProfilePage: React.FC = () => {
                 </div>
             </div>
             <div className="border-top pt-4">
-                <h4 className="fw-bold mb-4 d-flex align-items-center gap-2"><Calendar size={22} className="text-success" /> Раздел «Projects»</h4>
+                <h4 className="fw-bold mb-4 d-flex align-items-center gap-2"><Calendar size={22} className="text-success" /> {t('section_projects_title')}</h4>
                 <div className="card shadow-sm border-success-subtle mb-4">
-                    <div className="card-header bg-success-subtle text-success-emphasis fw-bold">Добавить новый проект</div>
+                    <div className="card-header bg-success-subtle text-success-emphasis fw-bold">{t('card_add_project_title')}</div>
                     <div className="card-body p-4">
                         <div className="row g-3">
                             <div className="col-12">
-                                <label className="form-label fw-semibold">Название проекта</label>
+                                <label className="form-label fw-semibold">{t('label_project_name')}</label>
                                 <input type="text" className="form-control" value={newProject.name} onChange={e => setNewProject({...newProject, name: e.target.value})} placeholder="Например: E-commerce Platform" />
                             </div>
                             <div className="col-md-6">
-                                <label className="form-label fw-semibold">Дата начала</label>
+                                <label className="form-label fw-semibold">{t('label_start_date')}</label>
                                 <input type="date" className="form-control" value={newProject.startDate} onChange={e => setNewProject({...newProject, startDate: e.target.value})} />
                             </div>
                             <div className="col-md-6">
-                                <label className="form-label fw-semibold">Дата окончания</label>
+                                <label className="form-label fw-semibold">{t('label_end_date')}</label>
                                 <input type="date" className="form-control" value={newProject.endDate} onChange={e => setNewProject({...newProject, endDate: e.target.value})} />
                             </div>
                             <div className="col-12 position-relative">
-                                <label className="form-label fw-semibold">Технологические теги</label>
+                                <label className="form-label fw-semibold">{t('label_tech_tags')}</label>
                                 <div className="d-flex flex-wrap gap-1 mb-2">
                                     {newProject.tags.map(t => (
                                         <span key={t} className="badge bg-secondary p-2 d-flex align-items-center gap-1">
@@ -303,7 +303,7 @@ export const ProfilePage: React.FC = () => {
                                 </div>
                                 <div className="input-group">
                                     <input type="text" className="form-control form-control-sm" placeholder="Введите тег" value={tagInput} onChange={e => setTagInput(e.target.value)} />
-                                    <button className="btn btn-outline-secondary btn-sm" type="button" onClick={() => handleAddTag(tagInput)}>Добавить</button>
+                                    <button className="btn btn-outline-secondary btn-sm" type="button" onClick={() => handleAddTag(tagInput)}>{t('btn_add_tag')}</button>
                                 </div>
                                 {tagInput && allExistingTags.filter(t => t.toLowerCase().startsWith(tagInput.toLowerCase())).length > 0 && (
                                     <div className="list-group shadow-sm mt-1 position-absolute z-3 w-100">
@@ -315,21 +315,21 @@ export const ProfilePage: React.FC = () => {
                             </div>
                             <div className="col-12">
                                 <div className="d-flex justify-content-between align-items-center mb-2">
-                                    <label className="form-label fw-semibold m-0">Описание проекта</label>
+                                    <label className="form-label fw-semibold m-0">{t('label_project_desc')}</label>
                                     <button type="button" className="btn btn-sm btn-outline-primary d-flex align-items-center gap-1" onClick={() => setPreviewMarkdown(!previewMarkdown)}>
-                                        <Eye size={14} /> {previewMarkdown ? 'Редактировать' : 'Предпросмотр Markdown'}
+                                        <Eye size={14} /> {previewMarkdown ? t('btn_edit_md') : t('btn_preview_md')}
                                     </button>
                                 </div>
                                 {previewMarkdown ? (
                                     <div className="p-3 border rounded bg-light text-dark" style={{ minHeight: '120px' }}>
-                                        <ReactMarkdown>{newProject.description || '*Описание пусто*'}</ReactMarkdown>
+                                        <ReactMarkdown>{newProject.description || t('placeholder_empty_desc')}</ReactMarkdown>
                                     </div>
                                 ) : (
                                     <textarea className="form-control" rows={4} value={newProject.description} onChange={e => setNewProject({...newProject, description: e.target.value})} />
                                 )}
                             </div>
                             <div className="col-12 text-end">
-                                <button type="button" className="btn btn-success d-inline-flex align-items-center gap-1" onClick={handleSaveProject}><Plus size={16} /> Сохранить проект</button>
+                                <button type="button" className="btn btn-success d-inline-flex align-items-center gap-1" onClick={handleSaveProject}><Plus size={16} /> {t('btn_save_project')}</button>
                             </div>
                         </div>
                     </div>
