@@ -39,7 +39,7 @@ export const MainPage: React.FC = () => {
     return (
         <div className="container py-4">
             <div className="row g-3 mb-5">
-                <h4 className="fw-bold text-dark d-flex align-items-center gap-2 mb-3"><BarChart2 className="text-primary" /> Публичная статистика платформы</h4>
+                <h4 className="fw-bold text-dark d-flex align-items-center gap-2 mb-3"><BarChart2 className="text-primary" /> {t('stats_title')}</h4>
                 <div className="col-md-4">
                     <div className="card shadow-sm border-0 bg-primary text-white p-3 rounded-3 text-center">
                         <h2 className="fw-extrabold m-0">{stats?.cvsLast24h}</h2>

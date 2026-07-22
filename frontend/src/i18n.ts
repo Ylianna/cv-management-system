@@ -74,7 +74,7 @@ const resources = {
             "theme_light": "Светлая тема",
             "theme_dark": "Тёмная тема",
             "lang_ru": "Русский",
-            "lang_en": "English",
+            "lang_en": "Английский",
             "nav_profile": "Мой профиль",
             "nav_positions": "Вакансии",
             "nav_logout": "Выйти",

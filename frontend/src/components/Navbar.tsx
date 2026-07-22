@@ -7,6 +7,7 @@ export const Navbar: React.FC = () => {
     const { t, i18n } = useTranslation();
     const { theme, toggleTheme } = useTheme();
     const [searchQuery, setSearchQuery] = useState('');
+    const [isLangOpen, setIsLangOpen] = useState(false);
 
     const changeLanguage = (lng: string) => {
         i18n.changeLanguage(lng);
@@ -60,19 +61,35 @@ export const Navbar: React.FC = () => {
                             <button
                                 className="btn btn-outline-secondary btn-sm dropdown-toggle d-flex align-items-center gap-1"
                                 type="button"
-                                data-bs-toggle="dropdown"
+                                onClick={() => setIsLangOpen(!isLangOpen)}
+                                onBlur={() => setTimeout(() => setIsLangOpen(false), 200)}
                             >
                                 <Globe size={16} />
                                 <span>{i18n.language === 'ru' ? 'RU' : 'EN'}</span>
                             </button>
-                            <ul className="dropdown-menu dropdown-menu-end shadow-sm">
+
+                            <ul className={`dropdown-menu dropdown-menu-end shadow-sm ${isLangOpen ? 'show' : ''}`} style={{ position: 'absolute', inset: '0px 0px auto auto', margin: '0px', transform: 'translate(0px, 34px)' }}>
                                 <li>
-                                    <button className={`dropdown-item ${i18n.language === 'ru' ? 'active' : ''}`} onClick={() => changeLanguage('ru')}>
+                                    <button
+                                        type="button"
+                                        className={`dropdown-item ${i18n.language === 'ru' ? 'active' : ''}`}
+                                        onMouseDown={() => {
+                                            changeLanguage('ru');
+                                            setIsLangOpen(false);
+                                        }}
+                                    >
                                         {t('lang_ru')}
                                     </button>
                                 </li>
                                 <li>
-                                    <button className={`dropdown-item ${i18n.language === 'en' ? 'active' : ''}`} onClick={() => changeLanguage('en')}>
+                                    <button
+                                        type="button"
+                                        className={`dropdown-item ${i18n.language === 'en' ? 'active' : ''}`}
+                                        onMouseDown={() => {
+                                            changeLanguage('en');
+                                            setIsLangOpen(false);
+                                        }}
+                                    >
                                         {t('lang_en')}
                                     </button>
                                 </li>
