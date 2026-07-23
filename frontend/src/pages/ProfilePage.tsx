@@ -3,10 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { useAutoSave } from '../hooks/useAutoSave';
 import ReactMarkdown from 'react-markdown';
 import { Save, AlertTriangle, CheckCircle, RefreshCw, Plus, Trash2, Calendar, Eye, Info, Search, Filter, Clock } from 'lucide-react';
-
-const BACKEND_URL = 'https://cv-backend-43xl.onrender.com';
-
-const CATEGORIES = ['Certification', 'Domain Knowledge', 'Personal Information', 'Soft Skills'];
+import { CATEGORIES } from '../constants/attributes';
+import { BACKEND_URL } from '../constants/api';
 
 interface ProfileData {
     id: string;
@@ -209,13 +207,13 @@ export const ProfilePage: React.FC = () => {
                 </div>
             </div>
             <div className="border-top pt-4 mb-5">
-                <h4 className="fw-bold mb-3 d-flex align-items-center gap-2"><Info size={22} className="text-primary" /> Раздел «Info» (Дополнительные навыки)</h4>
+                <h4 className="fw-bold mb-3 d-flex align-items-center gap-2"><Info size={22} className="text-primary" /> {t('section_info_title')} </h4>
 
                 <div className="row g-3 mb-4">
                     <div className="col-md-6">
                         <div className="input-group input-group-sm">
                             <span className="input-group-text"><Search size={14} /></span>
-                            <input type="text" className="form-control" placeholder={t('placeholder_search_prefix')}value={searchPrefix} onChange={e => setSearchPrefix(e.target.value)} />
+                            <input type="text" className="form-control" placeholder={t('placeholder_search_prefix')} value={searchPrefix} onChange={e => setSearchPrefix(e.target.value)} />
                         </div>
                     </div>
                     <div className="col-md-6">

@@ -1,0 +1,1 @@
+export const BACKEND_URL = 'https://cv-backend-43xl.onrender.com';

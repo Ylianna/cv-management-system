@@ -1,18 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Plus, Sliders, Layers } from 'lucide-react';
-
-const BACKEND_URL = 'https://cv-backend-43xl.onrender.com';
-
-const CATEGORIES = ['Certification', 'Domain Knowledge', 'Personal Information', 'Soft Skills'];
-
-const ATTRIBUTE_TYPES = [
-    { value: 'STRING', label: 'Строка (plain text)' },
-    { value: 'TEXT', label: 'Текст (Markdown)' },
-    { value: 'NUMERIC', label: 'Числовое поле' },
-    { value: 'BOOLEAN', label: 'Логическое (чекбокс)' },
-    { value: 'DROPDOWN', label: 'Выпадающий список (Dropdown)' }
-];
+import { CATEGORIES, ATTRIBUTE_TYPES } from '../constants/attributes';
+import { BACKEND_URL } from '../constants/api';
 
 interface AttributeItem {
     id: string;
@@ -85,7 +75,6 @@ export const RecruiterPanel: React.FC = () => {
             });
 
             if (response.status === 201) {
-                alert('Атрибут успешно добавлен в глобальную библиотеку!');
                 setName('');
                 setDescription('');
                 setOptionsInput('');
@@ -145,8 +134,8 @@ export const RecruiterPanel: React.FC = () => {
                                 <div className="mb-3">
                                     <label className="form-label fw-semibold">{t('field_attr_type')}</label>
                                     <select className="form-select" value={type} onChange={(e) => setType(e.target.value)}>
-                                        {ATTRIBUTE_TYPES.map((t) => (
-                                            <option key={t.value} value={t.value}>{t.label}</option>
+                                        {ATTRIBUTE_TYPES.map((tItem) => (
+                                            <option key={tItem.value} value={tItem.value}>{t(tItem.label)}</option>
                                         ))}
                                     </select>
                                 </div>

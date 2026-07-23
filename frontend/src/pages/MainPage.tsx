@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { TagCloud } from 'react-tagcloud';
 import { Briefcase, BarChart2, Star, TrendingUp } from 'lucide-react';
 import {useTranslation} from "react-i18next";
-
-const BACKEND_URL = 'https://cv-backend-43xl.onrender.com';
+import { BACKEND_URL } from '../constants/api';
 
 interface Stats {
     totalPositions: number;
@@ -34,7 +33,15 @@ export const MainPage: React.FC = () => {
             .catch(() => setLoading(false));
     }, []);
 
-    if (loading) return <div className="p-5 text-center text-muted">Загрузка аналитики и статистики...</div>;
+    const handleTagClick = (tag: { value: string; count: number }) => {
+        const searchInput = document.querySelector('input[placeholder*="search"]') as HTMLInputElement;
+        if (searchInput) {
+            searchInput.value = tag.value;
+            searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+    };
+
+    if (loading) return <div className="p-5 text-center text-muted">{t('loading_analytics')}</div>;
 
     return (
         <div className="container py-4">
@@ -124,7 +131,7 @@ export const MainPage: React.FC = () => {
                                         minSize={12}
                                         maxSize={32}
                                         tags={tags}
-                                        onClick={(tag: any) => alert(`Поиск резюме и вакансий по технологическому тегу: ${tag.value}`)}
+                                        onClick={handleTagClick}
                                         className="cursor-pointer"
                                     />
                                 </div>

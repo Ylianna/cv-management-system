@@ -3,8 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import { AlertCircle, ArrowLeft } from 'lucide-react';
 import { DiscussionTab } from '../components/DiscussionTab';
 import {useTranslation} from "react-i18next";
-
-const BACKEND_URL = 'https://cv-backend-43xl.onrender.com';
+import { BACKEND_URL } from '../constants/api';
 
 interface CVGeneratorPageProps {
     positionId: string;
@@ -74,7 +73,6 @@ export const CVGeneratorPage: React.FC<CVGeneratorPageProps> = ({ positionId, on
                 body: JSON.stringify({ version: cv.version })
             });
             if (res.status === 200) {
-                alert('Резюме успешно опубликовано!');
                 loadCVData();
             } else {
                 alert('Конфликт версий. Обновите страницу.');

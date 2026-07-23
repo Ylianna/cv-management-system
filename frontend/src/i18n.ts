@@ -103,7 +103,17 @@ const resources = {
             "placeholder_input_value": "Enter value ({{type}})",
             "placeholder_enter_tag": "Enter tag",
             "placeholder_attr_name": "e.g. IELTS Score or English Level",
-            "placeholder_attr_desc": "Describe what data the user should enter..."
+            "placeholder_attr_desc": "Describe what data the user should enter...",
+            "search_by_tag": "Searching by tag: ",
+            "loading_analytics": "Loading analytics and statistics...",
+            "status_required": "Required",
+            "status_optional": "Optional",
+            "section_info_title": "Section «Info» (Additional Skills)",
+            "type_string": "String (plain text)",
+            "type_text": "Text (Markdown)",
+            "type_numeric": "Numeric field",
+            "type_boolean": "Boolean (checkbox)",
+            "type_dropdown": "Dropdown list"
         }
     },
     ru: {
@@ -207,7 +217,17 @@ const resources = {
             "placeholder_project_name": "Например: E-commerce Platform",
             "placeholder_enter_tag": "Введите тег",
             "placeholder_attr_name": "Например: IELTS Score или English Level",
-            "placeholder_attr_desc": "Опишите, какие данные должен ввести пользователь..."
+            "placeholder_attr_desc": "Опишите, какие данные должен ввести пользователь...",
+            "search_by_tag": "Поиск по тегу: ",
+            "loading_analytics": "Загрузка аналитики и статистики...",
+            "status_required": "Обязательный",
+            "status_optional": "Опционально",
+            "section_info_title": "Раздел «Info» (Дополнительные навыки)",
+            "type_string": "Строка (plain text)",
+            "type_text": "Текст (Markdown)",
+            "type_numeric": "Числовое поле",
+            "type_boolean": "Логическое (чекбокс)",
+            "type_dropdown": "Выпадающий список (Dropdown)"
         }
     }
 };

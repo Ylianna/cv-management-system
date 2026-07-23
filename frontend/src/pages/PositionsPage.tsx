@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { SafeTable } from '../components/SafeTable';
 import { Plus, Sliders, Briefcase } from 'lucide-react';
 import {CVGeneratorPage} from "./CVGeneratorPage.tsx";
-
-const BACKEND_URL = 'https://cv-backend-43xl.onrender.com';
+import { BACKEND_URL } from '../constants/api';
 
 interface AttributeRelation {
     id: string;
@@ -179,8 +178,8 @@ export const PositionsPage: React.FC = () => {
                                                     </div>
                                                     {isChecked && (
                                                         <button type="button" className={`btn btn-xs py-0 px-1 border small ${selection.isRequired ? 'btn-danger text-white' : 'btn-outline-secondary'}`} onClick={() => toggleRequiredStatus(attr.id)}>
-                                                            {selection.isRequired ? 'Обязательный' : 'Опционально'}
-                                                        </button>
+                                                            {selection.isRequired ? t('status_required') : t('status_optional')}
+                                                                </button>
                                                     )}
                                                 </div>
                                             );
@@ -211,7 +210,7 @@ export const PositionsPage: React.FC = () => {
                                 <SafeTable
                                     data={tableData}
                                     onView={(id) => setSelectedPositionId(id)}
-                                    onEdit={(id) => handleDuplicatePosition(id[0])} // Кнопку "Редактировать" временно используем для быстрого дублирования по ТЗ!
+                                    onEdit={(id) => handleDuplicatePosition(id[0])}
                                     onDelete={handleDeletePositions}
                                 />
                             )}
