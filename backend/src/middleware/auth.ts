@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import {Request, Response, NextFunction} from 'express';
 
 export interface AuthenticatedRequest extends Request {
     user?: {
@@ -13,22 +13,22 @@ export const requireRole = (allowedRoles: ('CANDIDATE' | 'RECRUITER' | 'ADMIN')[
         const userId = req.headers['x-user-id'] as string;
 
         if (!userRole || !userId) {
-            res.status(401).json({ error: 'Не авторизован' });
+            res.status(401).json({error: 'Не авторизован'});
             return;
         }
 
         if (userRole === 'ADMIN') {
-            req.user = { id: userId, role: userRole };
+            req.user = {id: userId, role: userRole};
             next();
             return;
         }
 
         if (!allowedRoles.includes(userRole)) {
-            res.status(403).json({ error: 'Доступ запрещен для вашей роли' });
+            res.status(403).json({error: 'Доступ запрещен для вашей роли'});
             return;
         }
 
-        req.user = { id: userId, role: userRole };
+        req.user = {id: userId, role: userRole};
         next();
     };
 };

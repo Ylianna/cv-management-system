@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Eye, Edit, Trash2 } from 'lucide-react';
+import React, {useState} from 'react';
+import {Eye, Edit, Trash2} from 'lucide-react';
 
 interface TableRowData {
     id: string;
@@ -15,7 +15,7 @@ interface SafeTableProps {
     onDelete: (ids: string[]) => void;
 }
 
-export const SafeTable: React.FC<SafeTableProps> = ({ data, onView, onEdit, onDelete }) => {
+export const SafeTable: React.FC<SafeTableProps> = ({data, onView, onEdit, onDelete}) => {
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
     const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,7 +40,7 @@ export const SafeTable: React.FC<SafeTableProps> = ({ data, onView, onEdit, onDe
                 className={`shadow-sm rounded p-3 mb-3 bg-light border align-items-center justify-content-between transition-all ${
                     selectedIds.length > 0 ? 'd-flex' : 'd-none'
                 }`}
-                style={{ minHeight: '60px' }}
+                style={{minHeight: '60px'}}
             >
         <span className="text-muted small fw-bold">
           Выбрано элементов: {selectedIds.length}
@@ -52,21 +52,24 @@ export const SafeTable: React.FC<SafeTableProps> = ({ data, onView, onEdit, onDe
                                 onClick={() => onView(selectedIds[0])}
                                 className="btn btn-sm btn-primary d-inline-flex align-items-center gap-1"
                             >
-                                <Eye size={16} /> Просмотр
+                                <Eye size={16}/> Просмотр
                             </button>
                             <button
                                 onClick={() => onEdit(selectedIds[0])}
                                 className="btn btn-sm btn-warning text-white d-inline-flex align-items-center gap-1"
                             >
-                                <Edit size={16} /> Редактировать
+                                <Edit size={16}/> Редактировать
                             </button>
                         </>
                     )}
                     <button
-                        onClick={() => { onDelete(selectedIds); setSelectedIds([]); }}
+                        onClick={() => {
+                            onDelete(selectedIds);
+                            setSelectedIds([]);
+                        }}
                         className="btn btn-sm btn-danger d-inline-flex align-items-center gap-1"
                     >
-                        <Trash2 size={16} /> Удалить
+                        <Trash2 size={16}/> Удалить
                     </button>
                 </div>
             </div>
@@ -75,7 +78,7 @@ export const SafeTable: React.FC<SafeTableProps> = ({ data, onView, onEdit, onDe
                 <table className="table table-hover align-middle mb-0">
                     <thead className="table-dark">
                     <tr>
-                        <th style={{ width: '40px' }} className="text-center">
+                        <th style={{width: '40px'}} className="text-center">
                             <input
                                 type="checkbox"
                                 className="form-check-input"

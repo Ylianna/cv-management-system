@@ -1,7 +1,7 @@
-import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '../config/database';
-import { Position } from './Position';
-import { CV } from './CV';
+import {DataTypes, Model} from 'sequelize';
+import {sequelize} from '../config/database';
+import {Position} from './Position';
+import {CV} from './CV';
 
 export class Comment extends Model {
     public id!: string;
@@ -12,11 +12,11 @@ export class Comment extends Model {
 }
 
 Comment.init({
-    id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
-    positionId: { type: DataTypes.UUID, allowNull: false, references: { model: Position, key: 'id' } },
-    authorName: { type: DataTypes.STRING, allowNull: false, defaultValue: 'Анонимный кандидат' },
-    content: { type: DataTypes.TEXT, allowNull: false }
-}, { sequelize, modelName: 'Comment', updatedAt: false }); // Отключаем поле updatedAt, так как сообщения не редактируются по ТЗ
+    id: {type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true},
+    positionId: {type: DataTypes.UUID, allowNull: false, references: {model: Position, key: 'id'}},
+    authorName: {type: DataTypes.STRING, allowNull: false, defaultValue: 'Анонимный кандидат'},
+    content: {type: DataTypes.TEXT, allowNull: false}
+}, {sequelize, modelName: 'Comment', updatedAt: false}); // Отключаем поле updatedAt, так как сообщения не редактируются по ТЗ
 
 export class Like extends Model {
     public id!: string;
@@ -25,13 +25,13 @@ export class Like extends Model {
 }
 
 Like.init({
-    id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
-    cvId: { type: DataTypes.UUID, allowNull: false, references: { model: CV, key: 'id' } },
-    recruiterId: { type: DataTypes.UUID, allowNull: false }
-}, { sequelize, modelName: 'Like' });
+    id: {type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true},
+    cvId: {type: DataTypes.UUID, allowNull: false, references: {model: CV, key: 'id'}},
+    recruiterId: {type: DataTypes.UUID, allowNull: false}
+}, {sequelize, modelName: 'Like'});
 
-Position.hasMany(Comment, { foreignKey: 'positionId', as: 'comments', onDelete: 'CASCADE' });
-Comment.belongsTo(Position, { foreignKey: 'positionId' });
+Position.hasMany(Comment, {foreignKey: 'positionId', as: 'comments', onDelete: 'CASCADE'});
+Comment.belongsTo(Position, {foreignKey: 'positionId'});
 
-CV.hasMany(Like, { foreignKey: 'cvId', as: 'likes', onDelete: 'CASCADE' });
-Like.belongsTo(CV, { foreignKey: 'cvId' });
+CV.hasMany(Like, {foreignKey: 'cvId', as: 'likes', onDelete: 'CASCADE'});
+Like.belongsTo(CV, {foreignKey: 'cvId'});

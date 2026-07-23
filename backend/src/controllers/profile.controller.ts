@@ -1,14 +1,14 @@
-import { Request, Response } from 'express';
-import { Profile } from '../models/Profile';
+import {Request, Response} from 'express';
+import {Profile} from '../models/Profile';
 
 export const autoSaveProfile = async (req: Request, res: Response): Promise<void> => {
-    const { profileId, firstName, lastName, location, photoUrl, version } = req.body;
+    const {profileId, firstName, lastName, location, photoUrl, version} = req.body;
 
     try {
         const profile = await Profile.findByPk(profileId);
 
         if (!profile) {
-            res.status(404).json({ error: 'Профиль не найден' });
+            res.status(404).json({error: 'Профиль не найден'});
             return;
         }
 
@@ -34,9 +34,9 @@ export const autoSaveProfile = async (req: Request, res: Response): Promise<void
 
     } catch (error: any) {
         if (error.name === 'SequelizeOptimisticLockError') {
-            res.status(409).json({ error: 'Конфликт версий (Блокировка уровня БД)' });
+            res.status(409).json({error: 'Конфликт версий (Блокировка уровня БД)'});
             return;
         }
-        res.status(500).json({ error: 'Внутренняя ошибка сервера при сохранении' });
+        res.status(500).json({error: 'Внутренняя ошибка сервера при сохранении'});
     }
 };

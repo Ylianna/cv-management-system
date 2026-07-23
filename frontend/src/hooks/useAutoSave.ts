@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import {useEffect, useRef, useState} from 'react';
 
 interface AutoSaveConfig<T> {
     data: T;
@@ -7,7 +7,7 @@ interface AutoSaveConfig<T> {
     delay?: number;
 }
 
-export function useAutoSave<T>({ data, version, onSave, delay = 5000 }: AutoSaveConfig<T>) {
+export function useAutoSave<T>({data, version, onSave, delay = 5000}: AutoSaveConfig<T>) {
     const [currentVersion, setCurrentVersion] = useState(version);
     const isFirstRender = useRef(true);
     const dataRef = useRef(data);
@@ -30,5 +30,5 @@ export function useAutoSave<T>({ data, version, onSave, delay = 5000 }: AutoSave
         return () => clearTimeout(timer);
     }, [data, delay]);
 
-    return { currentVersion };
+    return {currentVersion};
 }

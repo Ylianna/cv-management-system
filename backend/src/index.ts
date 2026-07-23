@@ -1,9 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { sequelize } from './config/database';
-import { autoSaveProfile } from "./controllers/profile.controller";
-import { requireRole, AuthenticatedRequest } from './middleware/auth';
+import {sequelize} from './config/database';
+import {autoSaveProfile} from "./controllers/profile.controller";
+import {requireRole, AuthenticatedRequest} from './middleware/auth';
 
 dotenv.config();
 
@@ -16,22 +16,22 @@ app.use(express.json());
 app.post('/api/profile/autosave', requireRole(['CANDIDATE', 'ADMIN']), autoSaveProfile);
 
 app.get('/', (req, res) => {
-    res.json({ message: "CV Management API на Sequelize работает стабильно!" });
+    res.json({message: "CV Management API на Sequelize работает стабильно!"});
 });
 
-import { Project } from './models/Project';
+import {Project} from './models/Project';
 
 app.get('/api/profile/:profileId/projects', async (req, res) => {
     try {
-        const projects = await Project.findAll({ where: { profileId: req.params.profileId } });
+        const projects = await Project.findAll({where: {profileId: req.params.profileId}});
         res.json(projects);
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка при получении проектов' });
+        res.status(500).json({error: 'Ошибка при получении проектов'});
     }
 });
 
 app.post('/api/profile/:profileId/projects', async (req, res) => {
-    const { id, name, startDate, endDate, description, tags } = req.body;
+    const {id, name, startDate, endDate, description, tags} = req.body;
     try {
         const [project, created] = await Project.upsert({
             id: id || undefined,
@@ -42,27 +42,27 @@ app.post('/api/profile/:profileId/projects', async (req, res) => {
             description,
             tags
         });
-        res.json({ message: 'Проект сохранен', project });
+        res.json({message: 'Проект сохранен', project});
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка при сохранении проекта' });
+        res.status(500).json({error: 'Ошибка при сохранении проекта'});
     }
 });
 
 app.delete('/api/projects/:id', async (req, res) => {
     try {
-        await Project.destroy({ where: { id: req.params.id } });
-        res.json({ message: 'Проект успешно удален' });
+        await Project.destroy({where: {id: req.params.id}});
+        res.json({message: 'Проект успешно удален'});
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка при удалении проекта' });
+        res.status(500).json({error: 'Ошибка при удалении проекта'});
     }
 });
 
-import { AttributeLibrary, ProfileAttributeValue } from './models/Attribute';
-import { Position, PositionAttribute } from './models/Position';
-import { Op, fn, col } from 'sequelize';
-import { CV } from './models/CV';
-import { Profile } from './models/Profile';
-import { Comment, Like } from './models/Interaction';
+import {AttributeLibrary, ProfileAttributeValue} from './models/Attribute';
+import {Position, PositionAttribute} from './models/Position';
+import {Op, fn, col} from 'sequelize';
+import {CV} from './models/CV';
+import {Profile} from './models/Profile';
+import {Comment, Like} from './models/Interaction';
 
 app.get('/api/main-stats', async (req, res) => {
     try {
@@ -71,7 +71,7 @@ app.get('/api/main-stats', async (req, res) => {
 
         const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
         const cvsLast24h = await CV.count({
-            where: { createdAt: { [Op.gte]: twentyFourHoursAgo } }
+            where: {createdAt: {[Op.gte]: twentyFourHoursAgo}}
         });
 
         const latestPositions = await Position.findAll({
@@ -84,14 +84,14 @@ app.get('/api/main-stats', async (req, res) => {
                 'id', 'title', 'description', 'version', 'maxProjects',
                 [fn('COUNT', col('CVs.id')), 'cvCount']
             ],
-            include: [{ model: CV, attributes: [] }],
+            include: [{model: CV, attributes: []}],
             group: ['Position.id'],
             order: [[fn('COUNT', col('CVs.id')), 'DESC']],
             limit: 5,
             subQuery: false
         });
 
-        const projectsWithTags = await Project.findAll({ attributes: ['tags'] });
+        const projectsWithTags = await Project.findAll({attributes: ['tags']});
         const tagCounts: { [key: string]: number } = {};
 
         projectsWithTags.forEach(p => {
@@ -121,25 +121,25 @@ app.get('/api/main-stats', async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Ошибка сервера при сборе статистики главной страницы' });
+        res.status(500).json({error: 'Ошибка сервера при сборе статистики главной страницы'});
     }
 });
 
 app.get('/api/positions/:positionId/comments', async (req, res) => {
     try {
         const comments = await Comment.findAll({
-            where: { positionId: req.params.positionId },
+            where: {positionId: req.params.positionId},
             order: [['createdAt', 'ASC']]
         });
         res.json(comments);
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка загрузки обсуждений' });
+        res.status(500).json({error: 'Ошибка загрузки обсуждений'});
     }
 });
 
 app.post('/api/positions/:positionId/comments', async (req, res) => {
-    const { authorName, content } = req.body;
-    if (!content || !content.trim()) return res.status(400).json({ error: 'Сообщение пустое' });
+    const {authorName, content} = req.body;
+    if (!content || !content.trim()) return res.status(400).json({error: 'Сообщение пустое'});
 
     try {
         const comment = await Comment.create({
@@ -149,63 +149,63 @@ app.post('/api/positions/:positionId/comments', async (req, res) => {
         });
         res.status(201).json(comment);
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка отправки комментария' });
+        res.status(500).json({error: 'Ошибка отправки комментария'});
     }
 });
 
 app.post('/api/cv/:cvId/like', requireRole(['RECRUITER']), async (req, res) => {
-    const { recruiterId } = req.body;
+    const {recruiterId} = req.body;
     try {
         const existingLike = await Like.findOne({
-            where: { cvId: req.params.cvId, recruiterId }
+            where: {cvId: req.params.cvId, recruiterId}
         });
 
         if (existingLike) {
             await existingLike.destroy();
-            const count = await Like.count({ where: { cvId: req.params.cvId } });
-            return res.json({ liked: false, totalLikes: count });
+            const count = await Like.count({where: {cvId: req.params.cvId}});
+            return res.json({liked: false, totalLikes: count});
         } else {
-            await Like.create({ cvId: req.params.cvId, recruiterId });
-            const count = await Like.count({ where: { cvId: req.params.cvId } });
-            return res.json({ liked: true, totalLikes: count });
+            await Like.create({cvId: req.params.cvId, recruiterId});
+            const count = await Like.count({where: {cvId: req.params.cvId}});
+            return res.json({liked: true, totalLikes: count});
         }
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка обработки лайка' });
+        res.status(500).json({error: 'Ошибка обработки лайка'});
     }
 });
 
 app.get('/api/cv/:cvId/likes', async (req, res) => {
     try {
-        const count = await Like.count({ where: { cvId: req.params.cvId } });
-        res.json({ totalLikes: count });
+        const count = await Like.count({where: {cvId: req.params.cvId}});
+        res.json({totalLikes: count});
     } catch (error) {
-        res.status(500).json({ error: 0 });
+        res.status(500).json({error: 0});
     }
 });
 
 app.get('/api/positions/:positionId/generate/:profileId', async (req, res) => {
-    const { positionId, profileId } = req.params;
+    const {positionId, profileId} = req.params;
     try {
         const position = await Position.findByPk(positionId, {
-            include: [{ model: AttributeLibrary, as: 'requiredAttributes' }]
+            include: [{model: AttributeLibrary, as: 'requiredAttributes'}]
         });
-        if (!position) return res.status(404).json({ error: 'Позиция не найдена' });
+        if (!position) return res.status(404).json({error: 'Позиция не найдена'});
 
         const profile = await Profile.findByPk(profileId);
-        if (!profile) return res.status(404).json({ error: 'Профиль кандидата не найден' });
+        if (!profile) return res.status(404).json({error: 'Профиль кандидата не найден'});
 
         const filledAttributes = await ProfileAttributeValue.findAll({
-            where: { profileId }
+            where: {profileId}
         });
 
         const projects = await Project.findAll({
-            where: { profileId },
+            where: {profileId},
             limit: (position as any).maxProjects || 3
         });
 
         const [cv, created] = await CV.findOrCreate({
-            where: { profileId, positionId },
-            defaults: { isPublished: false }
+            where: {profileId, positionId},
+            defaults: {isPublished: false}
         });
 
         res.json({
@@ -216,53 +216,56 @@ app.get('/api/positions/:positionId/generate/:profileId', async (req, res) => {
             projects
         });
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка автогенерации CV' });
+        res.status(500).json({error: 'Ошибка автогенерации CV'});
     }
 });
 
 app.post('/api/cv/:id/publish', async (req, res) => {
-    const { version } = req.body;
+    const {version} = req.body;
     try {
         const cv = await CV.findByPk(req.params.id);
-        if (!cv) return res.status(404).json({ error: 'CV не найдено' });
+        if (!cv) return res.status(404).json({error: 'CV не найдено'});
 
         if (cv.version !== version) {
-            return res.status(409).json({ error: 'Конфликт версий при публикации' });
+            return res.status(409).json({error: 'Конфликт версий при публикации'});
         }
 
         cv.isPublished = true;
         await cv.save();
 
-        res.json({ message: 'Резюме успешно опубликовано и доступно рекрутерам!', cv });
+        res.json({message: 'Резюме успешно опубликовано и доступно рекрутерам!', cv});
     } catch (error: any) {
         if (error.name === 'SequelizeOptimisticLockError') {
-            return res.status(409).json({ error: 'Конфликт версий на уровне БД' });
+            return res.status(409).json({error: 'Конфликт версий на уровне БД'});
         }
-        res.status(500).json({ error: 'Ошибка публикации' });
+        res.status(500).json({error: 'Ошибка публикации'});
     }
 });
 
 app.get('/api/positions', async (req, res) => {
     try {
         const positions = await Position.findAll({
-            include: [{ model: AttributeLibrary, as: 'requiredAttributes', through: { attributes: ['isRequired'] } }]
+            include: [{model: AttributeLibrary, as: 'requiredAttributes', through: {attributes: ['isRequired']}}]
         });
         res.json(positions);
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка получения списка вакансий' });
+        res.status(500).json({error: 'Ошибка получения списка вакансий'});
     }
 });
 
 app.post('/api/positions', requireRole(['RECRUITER', 'ADMIN']), async (req, res) => {
-    const { id, title, description, accessRules, maxProjects, attributes, version } = req.body;
+    const {id, title, description, accessRules, maxProjects, attributes, version} = req.body;
 
     try {
         if (id) {
             const existing = await Position.findByPk(id);
-            if (!existing) return res.status(404).json({ error: 'Вакансия не найдена' });
+            if (!existing) return res.status(404).json({error: 'Вакансия не найдена'});
 
             if (existing.version !== version) {
-                return res.status(409).json({ error: 'Конфликт версий', message: 'Шаблон вакансии был изменен другим рекрутером.' });
+                return res.status(409).json({
+                    error: 'Конфликт версий',
+                    message: 'Шаблон вакансии был изменен другим рекрутером.'
+                });
             }
 
             existing.title = title;
@@ -271,33 +274,41 @@ app.post('/api/positions', requireRole(['RECRUITER', 'ADMIN']), async (req, res)
             existing.maxProjects = maxProjects;
             await existing.save();
 
-            await PositionAttribute.destroy({ where: { positionId: id } });
+            await PositionAttribute.destroy({where: {positionId: id}});
             if (attributes && Array.isArray(attributes)) {
-                await PositionAttribute.bulkCreate(attributes.map((a: any) => ({ positionId: id, attributeId: a.id, isRequired: a.isRequired })));
+                await PositionAttribute.bulkCreate(attributes.map((a: any) => ({
+                    positionId: id,
+                    attributeId: a.id,
+                    isRequired: a.isRequired
+                })));
             }
 
-            return res.json({ message: 'Вакансия обновлена', position: existing });
+            return res.json({message: 'Вакансия обновлена', position: existing});
         } else {
-            const newPos = await Position.create({ title, description, accessRules, maxProjects });
+            const newPos = await Position.create({title, description, accessRules, maxProjects});
             if (attributes && Array.isArray(attributes)) {
-                await PositionAttribute.bulkCreate(attributes.map((a: any) => ({ positionId: newPos.id, attributeId: a.id, isRequired: a.isRequired })));
+                await PositionAttribute.bulkCreate(attributes.map((a: any) => ({
+                    positionId: newPos.id,
+                    attributeId: a.id,
+                    isRequired: a.isRequired
+                })));
             }
-            return res.status(201).json({ message: 'Вакансия создана', position: newPos });
+            return res.status(201).json({message: 'Вакансия создана', position: newPos});
         }
     } catch (error: any) {
         if (error.name === 'SequelizeOptimisticLockError') {
-            return res.status(409).json({ error: 'Конфликт версий на уровне БД' });
+            return res.status(409).json({error: 'Конфликт версий на уровне БД'});
         }
-        res.status(500).json({ error: 'Серверная ошибка при сохранении вакансии' });
+        res.status(500).json({error: 'Серверная ошибка при сохранении вакансии'});
     }
 });
 
 app.post('/api/positions/:id/duplicate', async (req, res) => {
     try {
         const original = await Position.findByPk(req.params.id, {
-            include: [{ model: AttributeLibrary, as: 'requiredAttributes' }]
+            include: [{model: AttributeLibrary, as: 'requiredAttributes'}]
         });
-        if (!original) return res.status(404).json({ error: 'Оригинал не найден' });
+        if (!original) return res.status(404).json({error: 'Оригинал не найден'});
 
         const clone = await Position.create({
             title: `${original.title} (Copy)`,
@@ -315,77 +326,77 @@ app.post('/api/positions/:id/duplicate', async (req, res) => {
             })));
         }
 
-        res.status(201).json({ message: 'Вакансия успешно дублирована', position: clone });
+        res.status(201).json({message: 'Вакансия успешно дублирована', position: clone});
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка дублирования вакансии' });
+        res.status(500).json({error: 'Ошибка дублирования вакансии'});
     }
 });
 
 app.delete('/api/positions/:id', async (req, res) => {
     try {
-        await Position.destroy({ where: { id: req.params.id } });
-        res.json({ message: 'Вакансия удалена' });
+        await Position.destroy({where: {id: req.params.id}});
+        res.json({message: 'Вакансия удалена'});
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка при удалении вакансии' });
+        res.status(500).json({error: 'Ошибка при удалении вакансии'});
     }
 });
 
 
 app.get('/api/attributes', async (req, res) => {
-    const { prefix, category } = req.query;
+    const {prefix, category} = req.query;
     const whereClause: any = {};
 
     if (category) {
         whereClause.category = category;
     }
     if (prefix) {
-        whereClause.name = { [Op.iLike]: `${prefix}%` };
+        whereClause.name = {[Op.iLike]: `${prefix}%`};
     }
 
     try {
-        const attributes = await AttributeLibrary.findAll({ where: whereClause });
+        const attributes = await AttributeLibrary.findAll({where: whereClause});
         res.json(attributes);
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка получения библиотеки атрибутов' });
+        res.status(500).json({error: 'Ошибка получения библиотеки атрибутов'});
     }
 });
 
 app.post('/api/attributes', requireRole(['RECRUITER', 'ADMIN']), async (req, res) => {
-    const { category, name, description, type, options } = req.body;
+    const {category, name, description, type, options} = req.body;
     try {
-        const attribute = await AttributeLibrary.create({ category, name, description, type, options });
+        const attribute = await AttributeLibrary.create({category, name, description, type, options});
         res.status(201).json(attribute);
     } catch (error: any) {
         if (error.name === 'SequelizeUniqueConstraintError') {
-            return res.status(400).json({ error: 'Атрибут с таким именем уже существует' });
+            return res.status(400).json({error: 'Атрибут с таким именем уже существует'});
         }
-        res.status(500).json({ error: 'Ошибка создания атрибута' });
+        res.status(500).json({error: 'Ошибка создания атрибута'});
     }
 });
 
 app.get('/api/profile/:profileId/attributes', async (req, res) => {
     try {
         const values = await ProfileAttributeValue.findAll({
-            where: { profileId: req.params.profileId },
-            include: [{ model: AttributeLibrary, as: 'attribute' }]
+            where: {profileId: req.params.profileId},
+            include: [{model: AttributeLibrary, as: 'attribute'}]
         });
         res.json(values);
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка получения значений профиля' });
+        res.status(500).json({error: 'Ошибка получения значений профиля'});
     }
 });
 
 app.post('/api/profile/:profileId/attributes', async (req, res) => {
-    const { attributeId, value } = req.body;
+    const {attributeId, value} = req.body;
     try {
         const [attributeValue, created] = await ProfileAttributeValue.upsert({
             profileId: req.params.profileId,
             attributeId,
             value: String(value)
         });
-        res.json({ message: 'Значение атрибута сохранено', attributeValue });
+        res.json({message: 'Значение атрибута сохранено', attributeValue});
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка сохранения значения атрибута' });
+        res.status(500).json({error: 'Ошибка сохранения значения атрибута'});
     }
 });
 
@@ -393,7 +404,7 @@ app.post('/api/profile/:profileId/attributes', async (req, res) => {
 sequelize.authenticate()
     .then(() => {
         console.log('Успешное подключение к PostgreSQL!');
-        return sequelize.sync({ alter: true });
+        return sequelize.sync({alter: true});
     })
     .then(() => {
         console.log('Таблицы базы данных успешно синхронизированы.');

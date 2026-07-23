@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { TagCloud } from 'react-tagcloud';
-import { Briefcase, BarChart2, Star, TrendingUp } from 'lucide-react';
+import React, {useState, useEffect} from 'react';
+import {TagCloud} from 'react-tagcloud';
+import {Briefcase, BarChart2, Star, TrendingUp} from 'lucide-react';
 import {useTranslation} from "react-i18next";
-import { BACKEND_URL } from '../constants/api';
+import {BACKEND_URL} from '../constants/api';
 
 interface Stats {
     totalPositions: number;
@@ -13,7 +13,7 @@ interface Stats {
 }
 
 export const MainPage: React.FC = () => {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const [stats, setStats] = useState<Stats | null>(null);
     const [latest, setLatest] = useState<any[]>([]);
     const [popular, setPopular] = useState<any[]>([]);
@@ -37,7 +37,7 @@ export const MainPage: React.FC = () => {
         const searchInput = document.querySelector('input[placeholder*="search"]') as HTMLInputElement;
         if (searchInput) {
             searchInput.value = tag.value;
-            searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+            searchInput.dispatchEvent(new Event('input', {bubbles: true}));
         }
     };
 
@@ -46,7 +46,8 @@ export const MainPage: React.FC = () => {
     return (
         <div className="container py-4">
             <div className="row g-3 mb-5">
-                <h4 className="fw-bold text-dark d-flex align-items-center gap-2 mb-3"><BarChart2 className="text-primary" /> {t('stats_title')}</h4>
+                <h4 className="fw-bold text-dark d-flex align-items-center gap-2 mb-3"><BarChart2
+                    className="text-primary"/> {t('stats_title')}</h4>
                 <div className="col-md-4">
                     <div className="card shadow-sm border-0 bg-primary text-white p-3 rounded-3 text-center">
                         <h2 className="fw-extrabold m-0">{stats?.cvsLast24h}</h2>
@@ -71,13 +72,16 @@ export const MainPage: React.FC = () => {
                 <div className="col-lg-8">
                     <div className="card shadow-sm mb-4">
                         <div className="card-header bg-light fw-bold text-dark d-flex align-items-center gap-2 py-3">
-                            <Briefcase size={18} className="text-warning" /> <span>{t('latest_vacancies')}</span>
+                            <Briefcase size={18} className="text-warning"/> <span>{t('latest_vacancies')}</span>
                         </div>
                         <div className="card-body p-0">
                             <div className="table-responsive">
                                 <table className="table table-hover align-middle mb-0 small">
                                     <thead className="table-light">
-                                    <tr><th>{t('table_col_title')}</th><th>{t('table_col_desc')}</th></tr>
+                                    <tr>
+                                        <th>{t('table_col_title')}</th>
+                                        <th>{t('table_col_desc')}</th>
+                                    </tr>
                                     </thead>
                                     <tbody>
                                     {latest.map(p => (
@@ -94,20 +98,26 @@ export const MainPage: React.FC = () => {
 
                     <div className="card shadow-sm">
                         <div className="card-header bg-light fw-bold text-dark d-flex align-items-center gap-2 py-3">
-                            <Star size={18} className="text-danger" /> <span>{t('top_vacancies')}</span>
+                            <Star size={18} className="text-danger"/> <span>{t('top_vacancies')}</span>
                         </div>
                         <div className="card-body p-0">
                             <div className="table-responsive">
                                 <table className="table table-hover align-middle mb-0 small">
                                     <thead className="table-light">
-                                    <tr><th>{t('table_col_rank')}</th><th>{t('table_col_title')}</th><th className="text-center">{t('table_col_cv_count')}</th></tr>
+                                    <tr>
+                                        <th>{t('table_col_rank')}</th>
+                                        <th>{t('table_col_title')}</th>
+                                        <th className="text-center">{t('table_col_cv_count')}</th>
+                                    </tr>
                                     </thead>
                                     <tbody>
                                     {popular.map((p, index) => (
                                         <tr key={p.id}>
-                                            <td className="fw-bold text-center text-secondary" style={{ width: '60px' }}>#{index + 1}</td>
+                                            <td className="fw-bold text-center text-secondary"
+                                                style={{width: '60px'}}>#{index + 1}</td>
                                             <td className="fw-bold text-dark">{p.title}</td>
-                                            <td className="text-center"><span className="badge bg-danger p-2">{p.cvCount || 0} CV</span></td>
+                                            <td className="text-center"><span
+                                                className="badge bg-danger p-2">{p.cvCount || 0} CV</span></td>
                                         </tr>
                                     ))}
                                     </tbody>
@@ -120,9 +130,10 @@ export const MainPage: React.FC = () => {
                 <div className="col-lg-4">
                     <div className="card shadow-sm h-100">
                         <div className="card-header bg-light fw-bold text-dark d-flex align-items-center gap-2 py-3">
-                            <TrendingUp size={18} className="text-success" /> <span>{t('tag_cloud_title')}</span>
+                            <TrendingUp size={18} className="text-success"/> <span>{t('tag_cloud_title')}</span>
                         </div>
-                        <div className="card-body d-flex align-items-center justify-content-center p-4 bg-white rounded-bottom">
+                        <div
+                            className="card-body d-flex align-items-center justify-content-center p-4 bg-white rounded-bottom">
                             {tags.length === 0 ? (
                                 <small className="text-muted italic">{t('tag_cloud_empty')}</small>
                             ) : (

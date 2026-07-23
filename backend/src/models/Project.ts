@@ -1,6 +1,6 @@
-import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '../config/database';
-import { Profile } from './Profile';
+import {DataTypes, Model} from 'sequelize';
+import {sequelize} from '../config/database';
+import {Profile} from './Profile';
 
 export class Project extends Model {
     public id!: string;
@@ -21,12 +21,12 @@ Project.init({
     profileId: {
         type: DataTypes.UUID,
         allowNull: false,
-        references: { model: Profile, key: 'id' }
+        references: {model: Profile, key: 'id'}
     },
-    name: { type: DataTypes.STRING, allowNull: false },
-    startDate: { type: DataTypes.DATE, allowNull: false },
-    endDate: { type: DataTypes.DATE, allowNull: false },
-    description: { type: DataTypes.TEXT, allowNull: false },
+    name: {type: DataTypes.STRING, allowNull: false},
+    startDate: {type: DataTypes.DATE, allowNull: false},
+    endDate: {type: DataTypes.DATE, allowNull: false},
+    description: {type: DataTypes.TEXT, allowNull: false},
     tags: {
         type: DataTypes.JSONB,
         allowNull: false,
@@ -37,5 +37,5 @@ Project.init({
     modelName: 'Project'
 });
 
-Profile.hasMany(Project, { foreignKey: 'profileId', as: 'projects', onDelete: 'CASCADE' });
-Project.belongsTo(Profile, { foreignKey: 'profileId' });
+Profile.hasMany(Project, {foreignKey: 'profileId', as: 'projects', onDelete: 'CASCADE'});
+Project.belongsTo(Profile, {foreignKey: 'profileId'});

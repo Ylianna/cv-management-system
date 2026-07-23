@@ -1,5 +1,5 @@
 import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
+import {initReactI18next} from 'react-i18next';
 
 const resources = {
     en: {
@@ -127,6 +127,14 @@ const resources = {
             "err_publish": "Publishing error. Please refresh the page.",
             "err_create_attribute": "Failed to create attribute. Please refresh the page.",
             "err_server_create_attribute": "Server error while creating the attribute. Please refresh the page.",
+            "toast_fill_attribute": "Please fill in the attribute name and description.",
+            "toast_dropdown_options": "Please provide at least one option separated by commas.",
+            "toast_attribute_created": "Attribute created successfully!",
+            "toast_create_attribute_error": "Failed to create attribute.",
+            "toast_server_error": "Server error. Please try again later.",
+            "toast_project_title_dates": "Fill in the project title and dates!",
+            "toast_job_title_desc": "Fill in the job title and description!",
+            "warn_delete_template": "Are you sure you want to delete the selected templates?",
         }
     },
     ru: {
@@ -254,6 +262,14 @@ const resources = {
             "err_publish": "Ошибка публикации. Пожалуйста перезагрузите страницу.",
             "err_create_attribute": "Не удалось создать атрибут. Пожалуйста перезагрузите страницу.",
             "err_server_create_attribute": "Серверная ошибка при создании атрибута. Пожалуйста перезагрузите страницу.",
+            "toast_fill_attribute": "Пожалуйста, заполните имя и описание атрибута!",
+            "toast_dropdown_options": "Для выпадающего списка нужно указать хотя бы один вариант через запятую!",
+            "toast_attribute_created": "Атрибут успешно создан!",
+            "toast_create_attribute_error": "Не удалось создать атрибут.",
+            "toast_server_error": "Ошибка сервера. Попробуйте позже.",
+            "toast_project_title_dates": "Заполните название и даты проекта!",
+            "toast_job_title_desc": "Заполните название и описание вакансии!",
+            "warn_delete_template": "Вы уверены, что хотите удалить выбранные шаблоны?",
         }
     }
 };
@@ -264,7 +280,7 @@ i18n
         resources,
         lng: localStorage.getItem('ui-lang') || 'ru',
         fallbackLng: 'en',
-        interpolation: { escapeValue: false }
+        interpolation: {escapeValue: false}
     });
 
 export default i18n;

@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Plus, Sliders, Layers } from 'lucide-react';
-import { CATEGORIES, ATTRIBUTE_TYPES } from '../constants/attributes';
-import { BACKEND_URL } from '../constants/api';
+import React, {useState, useEffect} from 'react';
+import {useTranslation} from 'react-i18next';
+import {Plus, Sliders, Layers} from 'lucide-react';
+import {CATEGORIES, ATTRIBUTE_TYPES} from '../constants/attributes';
+import {BACKEND_URL} from '../constants/api';
 import {ErrorNotice} from "../components/ErrorNotice";
+import toast from 'react-hot-toast';
 
 interface AttributeItem {
     id: string;
@@ -15,7 +16,7 @@ interface AttributeItem {
 }
 
 export const RecruiterPanel: React.FC = () => {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
     const [attributes, setAttributes] = useState<AttributeItem[]>([]);
     const [loading, setLoading] = useState(true);
@@ -46,7 +47,7 @@ export const RecruiterPanel: React.FC = () => {
         e.preventDefault();
 
         if (!name.trim() || !description.trim()) {
-            alert('Пожалуйста, заполните имя и описание атрибута!');
+            toast.error(t('toast_fill_attribute'));
             return;
         }
 
@@ -58,7 +59,7 @@ export const RecruiterPanel: React.FC = () => {
                 .filter((opt) => opt.length > 0);
 
             if (parsedOptions.length === 0) {
-                alert('Для выпадающего списка нужно указать хотя бы один вариант через запятую!');
+                toast.error(t('toast_dropdown_options'));
                 return;
             }
         }
@@ -66,7 +67,7 @@ export const RecruiterPanel: React.FC = () => {
         try {
             const response = await fetch(`${BACKEND_URL}/api/attributes`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     category,
                     name: name.trim(),
@@ -81,6 +82,7 @@ export const RecruiterPanel: React.FC = () => {
                 setDescription('');
                 setOptionsInput('');
                 loadAttributes();
+                toast.success(t('toast_attribute_created'));
             } else {
                 setActiveError('err_create_attribute');
             }
@@ -105,14 +107,15 @@ export const RecruiterPanel: React.FC = () => {
                 <div className="col-lg-5">
                     <div className="card shadow-sm border-primary-subtle">
                         <div className="card-header bg-primary text-white fw-bold d-flex align-items-center gap-2">
-                            <Sliders size={18} />
+                            <Sliders size={18}/>
                             <span>{t('attr_constructor_title')}</span>
                         </div>
                         <div className="card-body p-4">
                             <form onSubmit={handleCreateAttribute}>
                                 <div className="mb-3">
                                     <label className="form-label fw-semibold">{t('field_attr_category')}</label>
-                                    <select className="form-select" value={category} onChange={(e) => setCategory(e.target.value)}>
+                                    <select className="form-select" value={category}
+                                            onChange={(e) => setCategory(e.target.value)}>
                                         {CATEGORIES.map((cat) => (
                                             <option key={cat} value={cat}>{cat}</option>
                                         ))}
@@ -143,7 +146,8 @@ export const RecruiterPanel: React.FC = () => {
 
                                 <div className="mb-3">
                                     <label className="form-label fw-semibold">{t('field_attr_type')}</label>
-                                    <select className="form-select" value={type} onChange={(e) => setType(e.target.value)}>
+                                    <select className="form-select" value={type}
+                                            onChange={(e) => setType(e.target.value)}>
                                         {ATTRIBUTE_TYPES.map((tItem) => (
                                             <option key={tItem.value} value={tItem.value}>{t(tItem.label)}</option>
                                         ))}
@@ -152,7 +156,8 @@ export const RecruiterPanel: React.FC = () => {
 
                                 {type === 'DROPDOWN' && (
                                     <div className="mb-3 p-3 bg-light rounded border border-warning-subtle">
-                                        <label className="form-label fw-semibold text-warning-emphasis">{t('field_dropdown_opts')}</label>
+                                        <label
+                                            className="form-label fw-semibold text-warning-emphasis">{t('field_dropdown_opts')}</label>
                                         <input
                                             type="text"
                                             className="form-control"
@@ -164,8 +169,9 @@ export const RecruiterPanel: React.FC = () => {
                                     </div>
                                 )}
 
-                                <button type="submit" className="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-1 mt-4">
-                                    <Plus size={16} /> {t('btn_add_to_library')}
+                                <button type="submit"
+                                        className="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-1 mt-4">
+                                    <Plus size={16}/> {t('btn_add_to_library')}
                                 </button>
                             </form>
                         </div>
@@ -175,7 +181,7 @@ export const RecruiterPanel: React.FC = () => {
                 <div className="col-lg-7">
                     <div className="card shadow-sm">
                         <div className="card-header bg-dark text-white fw-bold d-flex align-items-center gap-2">
-                            <Layers size={18} />
+                            <Layers size={18}/>
                             <span>{t('global_library_title')}</span>
                         </div>
                         <div className="card-body p-0">
@@ -201,14 +207,17 @@ export const RecruiterPanel: React.FC = () => {
                                                     {attr.options && (
                                                         <div className="mt-1">
                                                             {attr.options.map((opt) => (
-                                                                <span key={opt} className="badge bg-light text-dark border me-1 small">{opt}</span>
+                                                                <span key={opt}
+                                                                      className="badge bg-light text-dark border me-1 small">{opt}</span>
                                                             ))}
                                                         </div>
                                                     )}
                                                 </td>
                                                 <td>
-                                                    <span className="badge bg-secondary d-block mb-1">{attr.category}</span>
-                                                    <span className="small text-muted d-block text-center border rounded bg-light">{attr.type}</span>
+                                                    <span
+                                                        className="badge bg-secondary d-block mb-1">{attr.category}</span>
+                                                    <span
+                                                        className="small text-muted d-block text-center border rounded bg-light">{attr.type}</span>
                                                 </td>
                                                 <td className="small text-secondary">{attr.description}</td>
                                             </tr>
