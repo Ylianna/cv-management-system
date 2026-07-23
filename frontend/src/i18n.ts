@@ -113,7 +113,20 @@ const resources = {
             "type_text": "Text (Markdown)",
             "type_numeric": "Numeric field",
             "type_boolean": "Boolean (checkbox)",
-            "type_dropdown": "Dropdown list"
+            "type_dropdown": "Dropdown list",
+            "error_title": "Error",
+            "btn_reload": "Reload Page",
+            "err_network_fail": "Server connection lost. Please check your internet connection.",
+            "err_save_failed": "Failed to save data. Try entering the value again.",
+            "err_delete_failed": "Failed to delete item. The server might be temporarily unavailable.",
+            "err_project_save_failed": "Failed to save the project. Please try again later.",
+            "err_vacancy_save_failed": "Error saving the vacancy. Please try again later or refresh the page.",
+            "err_duplicate": "Duplicate error. Please reload the page",
+            "err_value_save": "Error saving the value. Please reload the page.",
+            "err_version_conflict": "Version conflict. Please refresh the page.",
+            "err_publish": "Publishing error. Please refresh the page.",
+            "err_create_attribute": "Failed to create attribute. Please refresh the page.",
+            "err_server_create_attribute": "Server error while creating the attribute. Please refresh the page.",
         }
     },
     ru: {
@@ -227,7 +240,20 @@ const resources = {
             "type_text": "Текст (Markdown)",
             "type_numeric": "Числовое поле",
             "type_boolean": "Логическое (чекбокс)",
-            "type_dropdown": "Выпадающий список (Dropdown)"
+            "type_dropdown": "Выпадающий список (Dropdown)",
+            "error_title": "Ошибка",
+            "btn_reload": "Перезагрузить страницу",
+            "err_network_fail": "Потеряно соединение с сервером. Проверьте интернет или перезагрузите страницу.",
+            "err_save_failed": "Не удалось сохранить данные. Попробуйте ввести значение ещё раз.",
+            "err_delete_failed": "Не удалось удалить элемент. Возможно, сервер временно недоступен.",
+            "err_project_save_failed": "Ошибка сохранения проекта. Пожалуйста, попробуйте позже.",
+            "err_vacancy_save_failed": "Ошибка сохранении вакансии. Пожалуйста, попробуйте позже или перезагрузите страницу.",
+            "err_duplicate": "Ошибка дублирования. Пожалуйста перезагрузите страницу.",
+            "err_value_save": "Ошибка при сохранении значения. Пожалуйста перезагрузите страницу.",
+            "err_version_conflict": "Конфликт версий. Пожалуйста перезагрузите страницу.",
+            "err_publish": "Ошибка публикации. Пожалуйста перезагрузите страницу.",
+            "err_create_attribute": "Не удалось создать атрибут. Пожалуйста перезагрузите страницу.",
+            "err_server_create_attribute": "Серверная ошибка при создании атрибута. Пожалуйста перезагрузите страницу.",
         }
     }
 };

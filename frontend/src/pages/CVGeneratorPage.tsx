@@ -4,6 +4,7 @@ import { AlertCircle, ArrowLeft } from 'lucide-react';
 import { DiscussionTab } from '../components/DiscussionTab';
 import {useTranslation} from "react-i18next";
 import { BACKEND_URL } from '../constants/api';
+import {ErrorNotice} from "../components/ErrorNotice";
 
 interface CVGeneratorPageProps {
     positionId: string;
@@ -19,6 +20,7 @@ export const CVGeneratorPage: React.FC<CVGeneratorPageProps> = ({ positionId, on
     const [position, setPosition] = useState<any>(null);
     const [profile, setProfile] = useState<any>(null);
     const [activeView, setActiveView] = useState<'cv' | 'chat'>('cv');
+    const [activeError, setActiveError] = useState<string | null>(null);
 
     const [cvValues, setCvValues] = useState<{ [key: string]: string }>({});
     const [projects, setProjects] = useState<any[]>([]);
@@ -61,7 +63,7 @@ export const CVGeneratorPage: React.FC<CVGeneratorPageProps> = ({ positionId, on
                 body: JSON.stringify({ attributeId: attrId, value })
             });
         } catch {
-            alert('Ошибка при инлайн-сохранении значения');
+            setActiveError('err_value_save');
         }
     };
 
@@ -75,21 +77,30 @@ export const CVGeneratorPage: React.FC<CVGeneratorPageProps> = ({ positionId, on
             if (res.status === 200) {
                 loadCVData();
             } else {
-                alert('Конфликт версий. Обновите страницу.');
+                setActiveError('err_version_conflict');
             }
         } catch {
-            alert('Ошибка публикации.');
+            setActiveError('err_publish');
         }
     };
 
     const isPublishable = position?.requiredAttributes?.every((attr: any) => {
-        if (!attr.PositionAttribute?.isRequired) return true; // Опциональные пропускаем
+        if (!attr.PositionAttribute?.isRequired) return true;
         return cvValues[attr.id] && cvValues[attr.id].trim() !== '';
     });
     if (loading) return <div className="p-5 text-center text-muted">Сборка резюме из данных профиля...</div>;
 
     return (
         <div className="container py-4" style={{ maxWidth: '850px' }}>
+
+            {activeError && (
+                <ErrorNotice
+                    messageKey={activeError}
+                    isCritical={activeError === 'err_network_fail' || activeError === 'err_value_save' || activeError === 'err_version_conflict' || activeError === 'err_publish'}
+                    onClose={() => setActiveError(null)}
+                />
+            )}
+
             <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
                 <div className="d-flex gap-2">
                     <button className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" onClick={onBack}>

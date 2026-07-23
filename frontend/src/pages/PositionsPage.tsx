@@ -4,6 +4,7 @@ import { SafeTable } from '../components/SafeTable';
 import { Plus, Sliders, Briefcase } from 'lucide-react';
 import {CVGeneratorPage} from "./CVGeneratorPage.tsx";
 import { BACKEND_URL } from '../constants/api';
+import {ErrorNotice} from "../components/ErrorNotice";
 
 interface AttributeRelation {
     id: string;
@@ -32,6 +33,7 @@ export const PositionsPage: React.FC = () => {
     const [maxProjects, setMaxProjects] = useState(3);
     const [selectedAttrs, setSelectedAttrs] = useState<{ id: string; isRequired: boolean }[]>([]);
     const [selectedPositionId, setSelectedPositionId] = useState<string | null>(null);
+    const [activeError, setActiveError] = useState<string | null>(null);
 
     const [globalAttributes, setGlobalAttributes] = useState<any[]>([]);
 
@@ -83,14 +85,13 @@ export const PositionsPage: React.FC = () => {
             });
 
             if (response.status === 201) {
-                alert('Шаблон вакансии успешно создан!');
                 setTitle('');
                 setDescription('');
                 setSelectedAttrs([]);
                 loadInitialData();
             }
         } catch {
-            alert('Ошибка при сохранении вакансии на сервере.');
+            setActiveError('err_vacancy_save_failed');
         }
     };
 
@@ -100,11 +101,10 @@ export const PositionsPage: React.FC = () => {
                 method: 'POST'
             });
             if (response.status === 201) {
-                alert('Позиция успешно продублирована!');
                 loadInitialData();
             }
         } catch {
-            alert('Ошибка дублирования.');
+            setActiveError('err_duplicate');
         }
     };
 
@@ -116,7 +116,7 @@ export const PositionsPage: React.FC = () => {
             }
             loadInitialData();
         } catch {
-            alert('Ошибка при удалении элементов.');
+            setActiveError('err_delete_failed');
         }
     };
 
@@ -139,6 +139,15 @@ export const PositionsPage: React.FC = () => {
 
     return (
         <div className="container py-4">
+
+            {activeError && (
+                <ErrorNotice
+                    messageKey={activeError}
+                    isCritical={activeError === 'err_network_fail' || activeError === 'err_delete_failed' || activeError === 'err_duplicate' || activeError === 'err_vacancy_save_failed'}
+                    onClose={() => setActiveError(null)}
+                />
+            )}
+
             <div className="row g-4">
 
                 <div className="col-lg-5">

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Plus, Sliders, Layers } from 'lucide-react';
 import { CATEGORIES, ATTRIBUTE_TYPES } from '../constants/attributes';
 import { BACKEND_URL } from '../constants/api';
+import {ErrorNotice} from "../components/ErrorNotice";
 
 interface AttributeItem {
     id: string;
@@ -24,6 +25,7 @@ export const RecruiterPanel: React.FC = () => {
     const [description, setDescription] = useState('');
     const [type, setType] = useState('STRING');
     const [optionsInput, setOptionsInput] = useState('');
+    const [activeError, setActiveError] = useState<string | null>(null);
 
     const loadAttributes = () => {
         setLoading(true);
@@ -80,16 +82,24 @@ export const RecruiterPanel: React.FC = () => {
                 setOptionsInput('');
                 loadAttributes();
             } else {
-                const errData = await response.json();
-                alert(`Ошибка: ${errData.error || 'Не удалось создать атрибут'}`);
+                setActiveError('err_create_attribute');
             }
         } catch {
-            alert('Серверная ошибка при создании атрибута.');
+            setActiveError('err_server_create_attribute');
         }
     };
 
     return (
         <div className="container py-4">
+
+            {activeError && (
+                <ErrorNotice
+                    messageKey={activeError}
+                    isCritical={activeError === 'err_network_fail' || activeError === 'err_create_attribute' || activeError === 'err_server_create_attribute'}
+                    onClose={() => setActiveError(null)}
+                />
+            )}
+
             <div className="row g-4">
 
                 <div className="col-lg-5">

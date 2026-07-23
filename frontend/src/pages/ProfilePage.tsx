@@ -5,6 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import { Save, AlertTriangle, CheckCircle, RefreshCw, Plus, Trash2, Calendar, Eye, Info, Search, Filter, Clock } from 'lucide-react';
 import { CATEGORIES } from '../constants/attributes';
 import { BACKEND_URL } from '../constants/api';
+import {ErrorNotice} from "../components/ErrorNotice";
 
 interface ProfileData {
     id: string;
@@ -53,6 +54,7 @@ export const ProfilePage: React.FC = () => {
     const [newProject, setNewProject] = useState<ProjectData>({
         name: '', startDate: '', endDate: '', description: '', tags: []
     });
+    const [activeError, setActiveError] = useState<string | null>(null);
     const [tagInput, setTagInput] = useState('');
     const [previewMarkdown, setPreviewMarkdown] = useState(false);
 
@@ -138,7 +140,7 @@ export const ProfilePage: React.FC = () => {
             });
             setUserValues(prev => prev.map(v => v.attributeId === attrId ? { ...v, value: val } : v));
         } catch {
-            alert('Ошибка сохранения атрибута');
+            setActiveError('err_save_failed');
         }
     };
 
@@ -164,18 +166,27 @@ export const ProfilePage: React.FC = () => {
             const data = await res.json();
             setProjects(prev => [...prev.filter(p => p.id !== data.project.id), data.project]);
             setNewProject({ name: '', startDate: '', endDate: '', description: '', tags: [] });
-        } catch { alert('Ошибка сохранения проекта'); }
+        } catch { setActiveError('err_project_save_failed'); }
     };
 
     const handleDeleteProject = async (id: string) => {
         try {
             await fetch(`${BACKEND_URL}/api/projects/${id}`, { method: 'DELETE' });
             setProjects(prev => prev.filter(p => p.id !== id));
-        } catch { alert('Ошибка при удалении'); }
+        } catch { setActiveError('err_delete_failed'); }
     };
 
     return (
         <div className="container py-4" style={{ maxWidth: '850px' }}>
+
+            {activeError && (
+                <ErrorNotice
+                    messageKey={activeError}
+                    isCritical={activeError === 'err_network_fail' || activeError === 'err_delete_failed' || activeError === 'err_project_save_failed' || activeError === 'err_save_failed'}
+                    onClose={() => setActiveError(null)}
+                />
+            )}
+
             <div className="d-flex justify-content-between align-items-center mb-4 p-3 rounded border shadow-sm bg-light-subtle">
                 <h4 className="fw-bold m-0 d-flex align-items-center gap-2">
                     <Save size={20} className="text-primary"/>
