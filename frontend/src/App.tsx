@@ -5,13 +5,13 @@ import {ProfilePage} from './pages/ProfilePage';
 import {RecruiterPanel} from './pages/RecruiterPanel';
 import {PositionsPage} from './pages/PositionsPage';
 import {MainPage} from './pages/MainPage';
-import {User, Settings, Layers, Briefcase, ShieldAlert} from 'lucide-react';
+import {User, Settings, Layers, Briefcase} from 'lucide-react';
 import {Toaster} from 'react-hot-toast';
 
 function App() {
     const {t} = useTranslation();
 
-    const [currentRole, setCurrentRole] = useState<'CANDIDATE' | 'RECRUITER' | 'ADMIN'>('CANDIDATE');
+    const [currentRole] = useState<'CANDIDATE' | 'RECRUITER' | 'ADMIN'>('CANDIDATE');
     const [activeTab, setActiveTab] = useState<'main' | 'cv_list' | 'profile' | 'recruiter'>('main');
 
     useEffect(() => {
@@ -40,28 +40,6 @@ function App() {
             />
 
             <Navbar/>
-            <div className="container mt-3">
-                <div
-                    className="alert alert-info py-2 px-3 d-flex align-items-center justify-content-between rounded-3 border-info-subtle shadow-sm mb-3">
-            <span className="small fw-bold d-flex align-items-center gap-2 text-info-emphasis">
-              <ShieldAlert size={16}/> Пульт симуляции ролей:
-            </span>
-                    <div className="btn-group btn-group-sm">
-                        <button
-                            className={`btn btn-xs ${currentRole === 'CANDIDATE' ? 'btn-primary' : 'btn-outline-primary'}`}
-                            onClick={() => setCurrentRole('CANDIDATE')}>👨‍💻 Кандидат
-                        </button>
-                        <button
-                            className={`btn btn-xs ${currentRole === 'RECRUITER' ? 'btn-warning text-dark' : 'btn-outline-warning'}`}
-                            onClick={() => setCurrentRole('RECRUITER')}>💼 Рекрутер
-                        </button>
-                        <button
-                            className={`btn btn-xs ${currentRole === 'ADMIN' ? 'btn-danger' : 'btn-outline-danger'}`}
-                            onClick={() => setCurrentRole('ADMIN')}>👑 Администратор
-                        </button>
-                    </div>
-                </div>
-            </div>
 
             <div className="container">
                 <ul className="nav nav-tabs">
