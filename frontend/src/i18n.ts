@@ -127,6 +127,8 @@ const resources = {
             "err_publish": "Publishing error. Please refresh the page.",
             "err_create_attribute": "Failed to create attribute. Please refresh the page.",
             "err_server_create_attribute": "Server error while creating the attribute. Please refresh the page.",
+            "err_chat_update": "Chat update error. Please refresh the page.",
+            "err_send_message": "Failed to send the message. Please refresh the page.",
             "toast_fill_attribute": "Please fill in the attribute name and description.",
             "toast_dropdown_options": "Please provide at least one option separated by commas.",
             "toast_attribute_created": "Attribute created successfully!",
@@ -135,6 +137,7 @@ const resources = {
             "toast_project_title_dates": "Fill in the project title and dates!",
             "toast_job_title_desc": "Fill in the job title and description!",
             "warn_delete_template": "Are you sure you want to delete the selected templates?",
+            "warn_search_query": "Performing search for the query",
         }
     },
     ru: {
@@ -262,6 +265,8 @@ const resources = {
             "err_publish": "Ошибка публикации. Пожалуйста перезагрузите страницу.",
             "err_create_attribute": "Не удалось создать атрибут. Пожалуйста перезагрузите страницу.",
             "err_server_create_attribute": "Серверная ошибка при создании атрибута. Пожалуйста перезагрузите страницу.",
+            "err_chat_update": "Ошибка обновления чата. Пожалуйста перезагрузите страницу.",
+            "err_send_message": "Не удалось отправить сообщение. Пожалуйста перезагрузите страницу.",
             "toast_fill_attribute": "Пожалуйста, заполните имя и описание атрибута!",
             "toast_dropdown_options": "Для выпадающего списка нужно указать хотя бы один вариант через запятую!",
             "toast_attribute_created": "Атрибут успешно создан!",
@@ -270,6 +275,7 @@ const resources = {
             "toast_project_title_dates": "Заполните название и даты проекта!",
             "toast_job_title_desc": "Заполните название и описание вакансии!",
             "warn_delete_template": "Вы уверены, что хотите удалить выбранные шаблоны?",
+            "warn_search_query": "Выполняется поиск по запросу",
         }
     }
 };

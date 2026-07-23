@@ -14,8 +14,8 @@ export const autoSaveProfile = async (req: Request, res: Response): Promise<void
 
         if (profile.version !== version) {
             res.status(409).json({
-                error: 'Конфликт версий',
-                message: 'Данные были изменены. Обновите страницу.'
+                error: 'Version conflict',
+                message: 'The data has been modified. Please refresh the page.'
             });
             return;
         }
@@ -28,15 +28,15 @@ export const autoSaveProfile = async (req: Request, res: Response): Promise<void
         await profile.save();
 
         res.status(200).json({
-            message: 'Успешно сохранено через Sequelize',
+            message: 'Successfully saved via Sequelize.',
             newVersion: profile.version
         });
 
     } catch (error: any) {
         if (error.name === 'SequelizeOptimisticLockError') {
-            res.status(409).json({error: 'Конфликт версий (Блокировка уровня БД)'});
+            res.status(409).json({error: 'Version conflict (Database-level locking)'});
             return;
         }
-        res.status(500).json({error: 'Внутренняя ошибка сервера при сохранении'});
+        res.status(500).json({error: 'Internal server error while saving'});
     }
 };

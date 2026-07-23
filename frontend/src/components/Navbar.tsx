@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useTheme} from '../hooks/useTheme';
 import {Search, Sun, Moon, Globe, User} from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export const Navbar: React.FC = () => {
     const {t, i18n} = useTranslation();
@@ -17,7 +18,7 @@ export const Navbar: React.FC = () => {
     const handleSearchSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (searchQuery.trim()) {
-            alert(`Выполняется поиск по запросу: ${searchQuery}`);
+            toast.success(t('warn_search_query'));
         }
     };
 

@@ -13,7 +13,7 @@ export const requireRole = (allowedRoles: ('CANDIDATE' | 'RECRUITER' | 'ADMIN')[
         const userId = req.headers['x-user-id'] as string;
 
         if (!userRole || !userId) {
-            res.status(401).json({error: 'Не авторизован'});
+            res.status(401).json({error: 'Not authorized'});
             return;
         }
 
@@ -24,7 +24,7 @@ export const requireRole = (allowedRoles: ('CANDIDATE' | 'RECRUITER' | 'ADMIN')[
         }
 
         if (!allowedRoles.includes(userRole)) {
-            res.status(403).json({error: 'Доступ запрещен для вашей роли'});
+            res.status(403).json({error: 'Access denied for your role'});
             return;
         }
 

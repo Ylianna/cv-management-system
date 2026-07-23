@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react';
 import ReactMarkdown from 'react-markdown';
 import {MessageSquare, Send, User} from 'lucide-react';
+import {ErrorNotice} from "./ErrorNotice.tsx";
 
 const BACKEND_URL = 'https://cv-backend-43xl.onrender.com';
 
@@ -17,6 +18,7 @@ interface DiscussionTabProps {
 
 export const DiscussionTab: React.FC<DiscussionTabProps> = ({positionId}) => {
     const [comments, setComments] = useState<CommentItem[]>([]);
+    const [activeError, setActiveError] = useState<string | null>(null);
     const [inputText, setInputText] = useState('');
     const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -30,7 +32,7 @@ export const DiscussionTab: React.FC<DiscussionTabProps> = ({positionId}) => {
                 setComments(data);
             }
         } catch (err) {
-            console.error("Ошибка обновления чата");
+            setActiveError('err_chat_update');
         }
     };
 
@@ -63,12 +65,21 @@ export const DiscussionTab: React.FC<DiscussionTabProps> = ({positionId}) => {
                 fetchComments();
             }
         } catch {
-            alert('Не удалось отправить сообщение');
+            setActiveError('err_send_message');
         }
     };
 
     return (
         <div className="card shadow-sm border-top-0 rounded-bottom">
+
+            {activeError && (
+                <ErrorNotice
+                    messageKey={activeError}
+                    isCritical={activeError === 'err_network_fail' || activeError === 'err_chat_update' || activeError === 'err_send_message'}
+                    onClose={() => setActiveError(null)}
+                />
+            )}
+
             <div className="card-header bg-light d-flex align-items-center gap-2 py-3">
                 <MessageSquare size={18} className="text-primary"/>
                 <span className="fw-bold text-dark">Обсуждение требований и вакансии</span>

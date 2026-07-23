@@ -26,7 +26,7 @@ app.get('/api/profile/:profileId/projects', async (req, res) => {
         const projects = await Project.findAll({where: {profileId: req.params.profileId}});
         res.json(projects);
     } catch (error) {
-        res.status(500).json({error: 'Ошибка при получении проектов'});
+        res.status(500).json({error: 'Error retrieving projects'});
     }
 });
 
@@ -42,18 +42,18 @@ app.post('/api/profile/:profileId/projects', async (req, res) => {
             description,
             tags
         });
-        res.json({message: 'Проект сохранен', project});
+        res.json({message: 'Project saved', project});
     } catch (error) {
-        res.status(500).json({error: 'Ошибка при сохранении проекта'});
+        res.status(500).json({error: 'Error saving project'});
     }
 });
 
 app.delete('/api/projects/:id', async (req, res) => {
     try {
         await Project.destroy({where: {id: req.params.id}});
-        res.json({message: 'Проект успешно удален'});
+        res.json({message: 'The project has been successfully deleted.'});
     } catch (error) {
-        res.status(500).json({error: 'Ошибка при удалении проекта'});
+        res.status(500).json({error: 'Error deleting project'});
     }
 });
 
@@ -121,7 +121,7 @@ app.get('/api/main-stats', async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({error: 'Ошибка сервера при сборе статистики главной страницы'});
+        res.status(500).json({error: 'Server error while collecting homepage statistics'});
     }
 });
 
@@ -133,13 +133,13 @@ app.get('/api/positions/:positionId/comments', async (req, res) => {
         });
         res.json(comments);
     } catch (error) {
-        res.status(500).json({error: 'Ошибка загрузки обсуждений'});
+        res.status(500).json({error: 'Error loading discussions'});
     }
 });
 
 app.post('/api/positions/:positionId/comments', async (req, res) => {
     const {authorName, content} = req.body;
-    if (!content || !content.trim()) return res.status(400).json({error: 'Сообщение пустое'});
+    if (!content || !content.trim()) return res.status(400).json({error: 'The message is empty.'});
 
     try {
         const comment = await Comment.create({
@@ -149,7 +149,7 @@ app.post('/api/positions/:positionId/comments', async (req, res) => {
         });
         res.status(201).json(comment);
     } catch (error) {
-        res.status(500).json({error: 'Ошибка отправки комментария'});
+        res.status(500).json({error: 'Error sending comment'});
     }
 });
 
@@ -170,7 +170,7 @@ app.post('/api/cv/:cvId/like', requireRole(['RECRUITER']), async (req, res) => {
             return res.json({liked: true, totalLikes: count});
         }
     } catch (error) {
-        res.status(500).json({error: 'Ошибка обработки лайка'});
+        res.status(500).json({error: 'Error processing like'});
     }
 });
 
@@ -189,10 +189,10 @@ app.get('/api/positions/:positionId/generate/:profileId', async (req, res) => {
         const position = await Position.findByPk(positionId, {
             include: [{model: AttributeLibrary, as: 'requiredAttributes'}]
         });
-        if (!position) return res.status(404).json({error: 'Позиция не найдена'});
+        if (!position) return res.status(404).json({error: 'Position not found'});
 
         const profile = await Profile.findByPk(profileId);
-        if (!profile) return res.status(404).json({error: 'Профиль кандидата не найден'});
+        if (!profile) return res.status(404).json({error: 'Candidate profile not found'});
 
         const filledAttributes = await ProfileAttributeValue.findAll({
             where: {profileId}
@@ -216,7 +216,7 @@ app.get('/api/positions/:positionId/generate/:profileId', async (req, res) => {
             projects
         });
     } catch (error) {
-        res.status(500).json({error: 'Ошибка автогенерации CV'});
+        res.status(500).json({error: 'CV auto-generation error'});
     }
 });
 
@@ -224,21 +224,21 @@ app.post('/api/cv/:id/publish', async (req, res) => {
     const {version} = req.body;
     try {
         const cv = await CV.findByPk(req.params.id);
-        if (!cv) return res.status(404).json({error: 'CV не найдено'});
+        if (!cv) return res.status(404).json({error: 'CV not found'});
 
         if (cv.version !== version) {
-            return res.status(409).json({error: 'Конфликт версий при публикации'});
+            return res.status(409).json({error: 'Version conflict during publication'});
         }
 
         cv.isPublished = true;
         await cv.save();
 
-        res.json({message: 'Резюме успешно опубликовано и доступно рекрутерам!', cv});
+        res.json({message: 'The resume has been successfully published and is available to recruiters!', cv});
     } catch (error: any) {
         if (error.name === 'SequelizeOptimisticLockError') {
-            return res.status(409).json({error: 'Конфликт версий на уровне БД'});
+            return res.status(409).json({error: 'Version conflict at the database level'});
         }
-        res.status(500).json({error: 'Ошибка публикации'});
+        res.status(500).json({error: 'Publishing error'});
     }
 });
 
@@ -249,7 +249,7 @@ app.get('/api/positions', async (req, res) => {
         });
         res.json(positions);
     } catch (error) {
-        res.status(500).json({error: 'Ошибка получения списка вакансий'});
+        res.status(500).json({error: 'Error retrieving the list of vacancies'});
     }
 });
 
@@ -259,12 +259,12 @@ app.post('/api/positions', requireRole(['RECRUITER', 'ADMIN']), async (req, res)
     try {
         if (id) {
             const existing = await Position.findByPk(id);
-            if (!existing) return res.status(404).json({error: 'Вакансия не найдена'});
+            if (!existing) return res.status(404).json({error: 'Job opening not found'});
 
             if (existing.version !== version) {
                 return res.status(409).json({
-                    error: 'Конфликт версий',
-                    message: 'Шаблон вакансии был изменен другим рекрутером.'
+                    error: 'Version conflict',
+                    message: 'The job template was modified by another recruiter.'
                 });
             }
 
@@ -283,7 +283,7 @@ app.post('/api/positions', requireRole(['RECRUITER', 'ADMIN']), async (req, res)
                 })));
             }
 
-            return res.json({message: 'Вакансия обновлена', position: existing});
+            return res.json({message: 'Job posting updated', position: existing});
         } else {
             const newPos = await Position.create({title, description, accessRules, maxProjects});
             if (attributes && Array.isArray(attributes)) {
@@ -293,13 +293,13 @@ app.post('/api/positions', requireRole(['RECRUITER', 'ADMIN']), async (req, res)
                     isRequired: a.isRequired
                 })));
             }
-            return res.status(201).json({message: 'Вакансия создана', position: newPos});
+            return res.status(201).json({message: 'Job opening created', position: newPos});
         }
     } catch (error: any) {
         if (error.name === 'SequelizeOptimisticLockError') {
-            return res.status(409).json({error: 'Конфликт версий на уровне БД'});
+            return res.status(409).json({error: 'Version conflict at the database level'});
         }
-        res.status(500).json({error: 'Серверная ошибка при сохранении вакансии'});
+        res.status(500).json({error: 'Server error while saving the job posting'});
     }
 });
 
@@ -308,7 +308,7 @@ app.post('/api/positions/:id/duplicate', async (req, res) => {
         const original = await Position.findByPk(req.params.id, {
             include: [{model: AttributeLibrary, as: 'requiredAttributes'}]
         });
-        if (!original) return res.status(404).json({error: 'Оригинал не найден'});
+        if (!original) return res.status(404).json({error: 'Original not found'});
 
         const clone = await Position.create({
             title: `${original.title} (Copy)`,
@@ -326,18 +326,18 @@ app.post('/api/positions/:id/duplicate', async (req, res) => {
             })));
         }
 
-        res.status(201).json({message: 'Вакансия успешно дублирована', position: clone});
+        res.status(201).json({message: 'The job opening has been successfully duplicated.', position: clone});
     } catch (error) {
-        res.status(500).json({error: 'Ошибка дублирования вакансии'});
+        res.status(500).json({error: 'Job posting duplication error'});
     }
 });
 
 app.delete('/api/positions/:id', async (req, res) => {
     try {
         await Position.destroy({where: {id: req.params.id}});
-        res.json({message: 'Вакансия удалена'});
+        res.json({message: 'The job posting has been removed.'});
     } catch (error) {
-        res.status(500).json({error: 'Ошибка при удалении вакансии'});
+        res.status(500).json({error: 'Error deleting the job posting'});
     }
 });
 
@@ -357,7 +357,7 @@ app.get('/api/attributes', async (req, res) => {
         const attributes = await AttributeLibrary.findAll({where: whereClause});
         res.json(attributes);
     } catch (error) {
-        res.status(500).json({error: 'Ошибка получения библиотеки атрибутов'});
+        res.status(500).json({error: 'Error retrieving attribute library'});
     }
 });
 
@@ -368,9 +368,9 @@ app.post('/api/attributes', requireRole(['RECRUITER', 'ADMIN']), async (req, res
         res.status(201).json(attribute);
     } catch (error: any) {
         if (error.name === 'SequelizeUniqueConstraintError') {
-            return res.status(400).json({error: 'Атрибут с таким именем уже существует'});
+            return res.status(400).json({error: 'An attribute with this name already exists.'});
         }
-        res.status(500).json({error: 'Ошибка создания атрибута'});
+        res.status(500).json({error: 'Error creating attribute'});
     }
 });
 
@@ -382,7 +382,7 @@ app.get('/api/profile/:profileId/attributes', async (req, res) => {
         });
         res.json(values);
     } catch (error) {
-        res.status(500).json({error: 'Ошибка получения значений профиля'});
+        res.status(500).json({error: 'Error retrieving profile values'});
     }
 });
 
@@ -394,24 +394,24 @@ app.post('/api/profile/:profileId/attributes', async (req, res) => {
             attributeId,
             value: String(value)
         });
-        res.json({message: 'Значение атрибута сохранено', attributeValue});
+        res.json({message: 'The attribute value has been saved.', attributeValue});
     } catch (error) {
-        res.status(500).json({error: 'Ошибка сохранения значения атрибута'});
+        res.status(500).json({error: 'Error saving attribute value'});
     }
 });
 
 
 sequelize.authenticate()
     .then(() => {
-        console.log('Успешное подключение к PostgreSQL!');
+        console.log('Successfully connected to PostgreSQL!');
         return sequelize.sync({alter: true});
     })
     .then(() => {
-        console.log('Таблицы базы данных успешно синхронизированы.');
+        console.log('Database tables have been successfully synchronized.');
         app.listen(PORT, () => {
-            console.log(`Сервер успешно запущен на порту ${PORT}`);
+            console.log(`Server successfully started on port ${PORT}`);
         });
     })
     .catch((err) => {
-        console.error('Критическая ошибка при запуске сервера:', err);
+        console.error('Critical error during server startup:', err);
     });
