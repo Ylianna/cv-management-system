@@ -1,14 +1,26 @@
-import {Request, Response} from 'express';
-import {Profile} from '../models/Profile';
+import { Request, Response } from 'express';
+import { Profile } from '../models/Profile';
 
 export const autoSaveProfile = async (req: Request, res: Response): Promise<void> => {
-    const {profileId, firstName, lastName, location, photoUrl, version} = req.body;
+    const { profileId, firstName, lastName, location, photoUrl, version } = req.body;
 
     try {
         const profile = await Profile.findByPk(profileId);
 
         if (!profile) {
-            res.status(404).json({error: 'Профиль не найден'});
+            const newProfile = await Profile.create({
+                id: profileId,
+                firstName: firstName || '',
+                lastName: lastName || '',
+                location: location || '',
+                photoUrl: photoUrl || '',
+                version: 1
+            });
+
+            res.status(200).json({
+                message: 'The profile has been successfully initialized in the database',
+                newVersion: newProfile.version
+            });
             return;
         }
 
@@ -20,10 +32,10 @@ export const autoSaveProfile = async (req: Request, res: Response): Promise<void
             return;
         }
 
-        profile.firstName = firstName;
-        profile.lastName = lastName;
-        profile.location = location;
-        profile.photoUrl = photoUrl;
+        profile.firstName = firstName || '';
+        profile.lastName = lastName || '';
+        profile.location = location || '';
+        profile.photoUrl = photoUrl || '';
 
         await profile.save();
 
@@ -34,9 +46,10 @@ export const autoSaveProfile = async (req: Request, res: Response): Promise<void
 
     } catch (error: any) {
         if (error.name === 'SequelizeOptimisticLockError') {
-            res.status(409).json({error: 'Version conflict (Database-level locking)'});
+            res.status(409).json({ error: 'Version conflict (Database-level locking)' });
             return;
         }
-        res.status(500).json({error: 'Internal server error while saving'});
+        console.error("Backend autosave error:", error);
+        res.status(500).json({ error: 'Internal server error while saving' });
     }
 };

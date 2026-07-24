@@ -419,7 +419,7 @@ app.post('/api/profile/:profileId/attributes', async (req, res) => {
 sequelize.authenticate()
     .then(() => {
         console.log('Successfully connected to PostgreSQL!');
-        return sequelize.sync({force: true});
+        return sequelize.sync({alter: true});
     })
     .then(() => {
         console.log('Database tables have been successfully synchronized.');
