@@ -23,28 +23,43 @@ import {Project} from './models/Project';
 
 app.get('/api/profile/:profileId/projects', async (req, res) => {
     try {
-        const projects = await Project.findAll({where: {profileId: req.params.profileId}});
+        const dbProjects = await Project.findAll({ where: { profileId: req.params.profileId } });
+
+        const projects = dbProjects.map((p: any) => ({
+            ...p.toJSON(),
+            tags: p.tags ? p.tags.split(',').filter((t: string) => t.trim() !== '') : []
+        }));
+
         res.json(projects);
     } catch (error) {
-        res.status(500).json({error: 'Error retrieving projects'});
+        res.status(500).json({ error: 'Error retrieving projects' });
     }
 });
 
 app.post('/api/profile/:profileId/projects', async (req, res) => {
-    const {id, name, startDate, endDate, description, tags} = req.body;
+    const { id, name, startDate, endDate, description, tags } = req.body;
     try {
-        const [project, created] = await Project.upsert({
+        const tagsString = Array.isArray(tags) ? tags.join(',') : '';
+
+        const [dbProject, created] = await Project.upsert({
             id: id || undefined,
             profileId: req.params.profileId,
             name,
-            startDate,
-            endDate,
+            startDate: new Date(startDate),
+            endDate: new Date(endDate),
             description,
-            tags
+            tags: tagsString
         });
-        res.json({message: 'Project saved', project});
+
+        const project = {
+            ...dbProject.toJSON(),
+            tags: tagsString ? tagsString.split(',') : []
+        };
+
+        res.json({ message: 'Project saved', project });
     } catch (error) {
-        res.status(500).json({error: 'Error saving project'});
+        console.error(error);
+        res.status(500).json({ error: 'Error saving project' });
     }
 });
 

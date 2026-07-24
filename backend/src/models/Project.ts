@@ -9,7 +9,7 @@ export class Project extends Model {
     public startDate!: Date;
     public endDate!: Date;
     public description!: string;
-    public tags!: string[];
+    public tags!: string;
 }
 
 Project.init({
@@ -28,9 +28,9 @@ Project.init({
     endDate: {type: DataTypes.DATE, allowNull: false},
     description: {type: DataTypes.TEXT, allowNull: false},
     tags: {
-        type: DataTypes.JSONB,
+        type: DataTypes.TEXT,
         allowNull: false,
-        defaultValue: []
+        defaultValue: ''
     }
 }, {
     sequelize,
