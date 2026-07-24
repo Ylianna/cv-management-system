@@ -79,8 +79,7 @@ export const ProfilePage: React.FC = () => {
     const [searchPrefix, setSearchPrefix] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
 
-    const allExistingTags = Array.from(new Set(projects.flatMap(p => p.tags || [])));
-
+    const allExistingTags = Array.from(new Set((Array.isArray(projects) ? projects : []).flatMap(p => p?.tags || [])));
     const loadAllData = () => {
         fetch(`${BACKEND_URL}/api/profile/${profileId}`)
             .then(res => res.status === 200 ? res.json() : null)
@@ -443,13 +442,13 @@ export const ProfilePage: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="mt-4">
-                    {projects.map(p => (
+                <div className="mt-4">ъ
+                    {Array.isArray(projects) && projects.map(p => p && (
                         <div key={p.id} className="card shadow-sm mb-3 border-light-subtle bg-body-tertiary">
                             <div className="card-body">
                                 <div className="d-flex justify-content-between align-items-start">
                                     <div>
-                                        <h5 className="fw-bold m-0">{p.name}</h5>
+                                        <h5 className="fw-bold m-0">{p?.name || 'Без названия'}</h5>
                                         <small
                                             className="text-muted">{p.startDate ? new Date(p.startDate).toLocaleDateString() : ''} — {p.endDate ? new Date(p.endDate).toLocaleDateString() : ''}</small>
                                     </div>
