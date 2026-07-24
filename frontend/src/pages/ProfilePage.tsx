@@ -442,7 +442,7 @@ export const ProfilePage: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="mt-4">ъ
+                <div className="mt-4">
                     {Array.isArray(projects) && projects.map(p => p && (
                         <div key={p.id} className="card shadow-sm mb-3 border-light-subtle bg-body-tertiary">
                             <div className="card-body">
