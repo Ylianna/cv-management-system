@@ -407,6 +407,24 @@ app.get('/api/profile/:profileId/attributes', async (req, res) => {
     }
 });
 
+app.get('/api/profile/:id', async (req, res) => {
+    try {
+        const profile = await Profile.findByPk(req.params.id, {raw: true});
+
+        if (!profile) {
+            return res.status(404).json({error: 'Profile not found in database'});
+        }
+
+        return res.json({
+            profile,
+            version: profile.version || 1
+        });
+    } catch (error) {
+        console.error("Critical error while fetching profile:", error);
+        return res.status(500).json({error: 'Error retrieving profile values'});
+    }
+});
+
 app.post('/api/profile/:profileId/attributes', async (req, res) => {
     const {attributeId, value} = req.body;
     try {
