@@ -392,12 +392,18 @@ app.post('/api/attributes', requireRole(['RECRUITER', 'ADMIN']), async (req, res
 app.get('/api/profile/:profileId/attributes', async (req, res) => {
     try {
         const values = await ProfileAttributeValue.findAll({
-            where: {profileId: req.params.profileId},
-            include: [{model: AttributeLibrary, as: 'attribute'}]
+            where: { profileId: req.params.profileId },
+            include: [{
+                model: AttributeLibrary,
+                as: 'attribute',
+                required: false
+            }]
         });
-        res.json(values);
+
+        return res.json(values || []);
     } catch (error) {
-        res.status(500).json({error: 'Error retrieving profile values'});
+        console.error("Critical failure while reading custom profile attributes:", error);
+        return res.json([]);
     }
 });
 
