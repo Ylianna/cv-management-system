@@ -12,7 +12,7 @@ interface CVGeneratorPageProps {
 }
 
 export const CVGeneratorPage: React.FC<CVGeneratorPageProps> = ({positionId, onBack}) => {
-    const profileId = "test-profile-uuid-12345";
+    const profileId = "64057088-0a7e-45ac-9a52-ad524bebc004";
     const {t} = useTranslation();
 
     const [loading, setLoading] = useState(true);

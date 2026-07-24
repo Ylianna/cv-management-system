@@ -56,7 +56,7 @@ interface UserAttributeValue {
 
 export const ProfilePage: React.FC = () => {
     const {t} = useTranslation();
-    const profileId = "test-profile-uuid-12345";
+    const profileId = "64057088-0a7e-45ac-9a52-ad524bebc004";
 
     const [profile, setProfile] = useState<ProfileData>({
         id: profileId, firstName: '', lastName: '', location: '', photoUrl: ''

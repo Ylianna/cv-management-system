@@ -20,7 +20,7 @@ function App() {
             options.headers = {
                 ...options.headers,
                 'x-user-role': currentRole,
-                'x-user-id': 'test-profile-uuid-12345'
+                'x-user-id': '64057088-0a7e-45ac-9a52-ad524bebc004'
             };
             return originalFetch(url, options);
         };
